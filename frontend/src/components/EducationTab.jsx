@@ -25,6 +25,8 @@ const emptyEducation = {
   percentage: '',
   gradMonth: '',
   gradYear: '',
+  endMonth: '',
+  endYear: '',
   coursework: '',
 };
 
@@ -87,7 +89,7 @@ const EducationTab = (props) => {
     <div style={{ maxWidth: 1400, margin: '0 auto', padding: '2rem 1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>
-          Education Information
+          Education
         </h1>
       </div>
       
@@ -208,22 +210,22 @@ const EducationTab = (props) => {
                         />
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Percentage/CGPA</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Percentage</label>
                         <input
                           type="text"
                           name="percentage"
                           value={form.percentage}
                           onChange={(e) => handleChange(idx, e)}
-                          placeholder="e.g., 85% or 3.8 CGPA"
+                          placeholder="e.g., 85%"
                           style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
                         />
                       </div>
                     </div>
 
-                    {/* Row 3: Graduation Month and Graduation Year */}
+                    {/* Row 3: Start Month and Start Year */}
                     <div style={{ display: 'flex', gap: 12 }}>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Month</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Month</label>
                         <select
                           name="gradMonth"
                           value={form.gradMonth}
@@ -237,7 +239,7 @@ const EducationTab = (props) => {
                         </select>
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Year</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Year</label>
                         <select
                           name="gradYear"
                           value={form.gradYear}
@@ -252,7 +254,39 @@ const EducationTab = (props) => {
                       </div>
                     </div>
 
-                    {/* Row 4: Coursework Section */}
+                    {/* Row 4: End Month and End Year */}
+                    <div style={{ display: 'flex', gap: 12 }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>End Month</label>
+                        <select
+                          name="endMonth"
+                          value={form.endMonth}
+                          onChange={(e) => handleChange(idx, e)}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                        >
+                          <option value="">Select month</option>
+                          {months.map((month) => (
+                            <option key={month} value={month}>{month}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>End Year</label>
+                        <select
+                          name="endYear"
+                          value={form.endYear}
+                          onChange={(e) => handleChange(idx, e)}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                        >
+                          <option value="">Select year</option>
+                          {years.map((year) => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Row 5: Coursework Section */}
                     <div style={{ width: '100%' }}>
                       <div
                         style={{ cursor: 'pointer', color: '#2563eb', fontWeight: 600, fontSize: 16, marginBottom: 8 }}

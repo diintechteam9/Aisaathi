@@ -364,7 +364,7 @@ const Template3 = ({ formData, onEditSummary, onEditEducation, onEditExperience,
               {education.map((edu, index) => (
                 <div key={index} style={{ display: 'flex', marginBottom: index < education.length - 1 ? 12 : 0 }}>
                   <div style={{ minWidth: 80, fontSize: 13, color: '#666' }}>
-                    {edu.gradMonth} {edu.gradYear}
+                    {edu.gradMonth} {edu.gradYear} - {edu.endMonth && edu.endYear ? `${edu.endMonth} ${edu.endYear}` : 'Present'}
                   </div>
                   <div style={{ marginLeft: 16 }}>
                     <div style={{ fontWeight: 700, fontSize: 15, color: '#333', marginBottom: 2 }}>

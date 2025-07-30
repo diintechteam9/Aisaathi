@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -20,8 +21,13 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold text-violet-600">Aisaathi Resume Builder</h1>
+              <div className="flex-shrink-0 flex items-center">
+                <img 
+                  src="/logo.png" 
+                  alt="Aisaathi Logo" 
+                  className="h-12 w-12 mr-3"
+                />
+                <h1 className="text-2xl font-bold text-violet-600">Aisaathi</h1>
               </div>
             </div>
             
@@ -92,9 +98,9 @@ const LandingPage = () => {
       <section id="home" className="pt-16 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              Build Your Professional Resume with
-              <span className="text-violet-600"> AI Power</span>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 mt-10">
+              Build Your Professional Resume in
+              <span className="text-violet-600"> Minutes</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Create stunning, ATS-friendly resumes in minutes. Our AI analyzes job descriptions and optimizes your resume for maximum impact.
@@ -119,8 +125,8 @@ const LandingPage = () => {
                 <h3 className="text-2xl font-bold mb-4">Sample AI-Generated Resume</h3>
                 <div className="bg-white text-gray-800 p-4 rounded">
                   <div className="border-b-2 border-gray-200 pb-2 mb-4">
-                    <h4 className="text-xl font-bold text-gray-900">John Doe</h4>
-                    <p className="text-gray-600">Software Engineer | john.doe@email.com | (555) 123-4567</p>
+                    <h4 className="text-xl font-bold text-gray-900">Ramesh Pathak</h4>
+                    <p className="text-gray-600">Software Engineer | rameshpathak@email.com | (555) 123-4567</p>
                   </div>
                   <div className="space-y-3">
                     <div>
@@ -251,9 +257,9 @@ const LandingPage = () => {
               <div className="bg-violet-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-white text-2xl font-bold">1</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Input Your Information</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Select Your Template</h3>
               <p className="text-gray-600">
-                Enter your work experience, education, and skills. Our AI will help you describe your achievements effectively.
+              Choose a template to customize your resume layout. Select a template that suits your industry and role — IT, design, management & more.
               </p>
             </div>
 
@@ -262,9 +268,9 @@ const LandingPage = () => {
               <div className="bg-violet-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-white text-2xl font-bold">2</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">AI Optimization</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Input Your Information</h3>
               <p className="text-gray-600">
-                Our AI analyzes job descriptions and optimizes your resume with relevant keywords and formatting.
+              Enter your work experience, education, and skills. Our AI will help you describe your achievements effectively.
               </p>
             </div>
 
@@ -314,7 +320,7 @@ const LandingPage = () => {
                   <span className="text-white font-bold">S</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Sarah Johnson</h4>
+                  <h4 className="font-semibold text-gray-900">Abhishek sharma</h4>
                   <p className="text-gray-600 text-sm">Software Engineer</p>
                 </div>
               </div>
@@ -339,7 +345,7 @@ const LandingPage = () => {
                   <span className="text-white font-bold">M</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Mike Chen</h4>
+                  <h4 className="font-semibold text-gray-900">Kajal Gole</h4>
                   <p className="text-gray-600 text-sm">Marketing Manager</p>
                 </div>
               </div>
@@ -364,7 +370,7 @@ const LandingPage = () => {
                   <span className="text-white font-bold">E</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Emily Rodriguez</h4>
+                  <h4 className="font-semibold text-gray-900">Ramesh Rawat</h4>
                   <p className="text-gray-600 text-sm">UX Designer</p>
                 </div>
               </div>
@@ -390,7 +396,10 @@ const LandingPage = () => {
             <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-gray-200">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Free</h3>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">$0</span>
+                <span className="text-4xl font-bold text-gray-900 flex items-center">
+                  <FaIndianRupeeSign className="inline-block mr-1"/>
+                  <span>0</span>
+                </span>
                 <span className="text-gray-600">/month</span>
               </div>
               <ul className="space-y-3 mb-8">
@@ -425,7 +434,10 @@ const LandingPage = () => {
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Pro</h3>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">$9</span>
+                <span className="text-4xl font-bold text-gray-900 flex items-center">
+                  <FaIndianRupeeSign className="inline-block mr-1"/>
+                  <span>199</span>
+                </span>
                 <span className="text-gray-600">/month</span>
               </div>
               <ul className="space-y-3 mb-8">
@@ -469,7 +481,10 @@ const LandingPage = () => {
             <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-gray-200">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Enterprise</h3>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">$29</span>
+                <span className="text-4xl font-bold text-gray-900 flex items-center">
+                  <FaIndianRupeeSign className="inline-block mr-1"/>
+                  <span>299</span>
+                </span>
                 <span className="text-gray-600">/month</span>
               </div>
               <ul className="space-y-3 mb-8">
@@ -548,12 +563,12 @@ const LandingPage = () => {
               <div className="flex space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
                 </a>
                 <a href="#" className="text-gray-400 hover:text-white">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                   </svg>
                 </a>
                 <a href="#" className="text-gray-400 hover:text-white">

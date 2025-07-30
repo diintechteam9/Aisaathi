@@ -35,8 +35,8 @@ const FinalizeTab = (props) => {
   const handleDownloadResume = () => {
     if (templateRef.current) {
       const opt = {
-        margin: 20,
-        transform: 'scale(0.95)',
+        // margin: 20,
+        transform: 'scale(2.0)',
         filename: 'resume.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
@@ -146,7 +146,7 @@ const FinalizeTab = (props) => {
           <div style={{ fontSize: 48, marginBottom: 16 }}>
             🎉
           </div>
-          <h3 style={{ margin: '0 0 16px 0', fontSize: 24, fontWeight: 700, color: '#1f2937' }}>
+          <h3 style={{ margin: '0 0 16px 0', fontSize: 35, fontWeight: 700, color: '#1f2937' }}>
             Your Resume is Ready!
           </h3>
           <p style={{ margin: '0 0 24px 0', fontSize: 16, color: '#64748b', lineHeight: 1.5 }}>
@@ -221,7 +221,7 @@ const FinalizeTab = (props) => {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginLeft:'-40px'}}>
         <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>
-          Finalize Your Resume
+          Wrap-Up Your Resume
         </h1>
         <button
           type="button"
@@ -277,7 +277,7 @@ const FinalizeTab = (props) => {
             transformOrigin: 'top center',
             maxWidth: '100%',
             overflow: 'auto',
-            marginTop: selectedTemplate === 1 ? '450px' : '350px'
+            marginTop: selectedTemplate === 1 ? '350px' : '350px'
           }}>
             {renderTemplate()}
           </div>

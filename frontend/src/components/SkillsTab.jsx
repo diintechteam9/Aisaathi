@@ -60,7 +60,7 @@ const SkillsTab = (props) => {
     <div style={{ maxWidth: 1400, margin: '0 auto', padding: '2rem 1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>
-          Skills & Expertise
+          Skills
         </h1>
       </div>
       
@@ -100,7 +100,7 @@ const SkillsTab = (props) => {
           
           <div style={{ position: 'relative' }}>
             <h3 style={{ fontSize: 18, fontWeight: 600, color: '#1e293b', marginBottom: 8, margin: '0 0 8px 0' }}>
-              Add your technical and soft skills
+              Add your technical
             </h3>
             <div style={{ color: '#64748b', fontSize: 14, marginBottom: 32, margin: '0 0 10px 0' }}>
               List your key skills, technologies, and competencies

@@ -15,7 +15,7 @@ const Template1 = ({ formData, onEditSummary, onEditEducation, onEditExperience,
           </div>
           {/* Name & Title */}
           <div style={{ width: '100%', padding: '18px 0 0 24px', borderBottom: '1.5px solid #e0e7ef', marginBottom: 8 }}>
-            <div style={{ fontWeight: 700, fontSize: 26, lineHeight: 1, marginBottom: 2 }}>Sapna<br/>Pathak</div>
+            <div style={{ fontWeight: 700, fontSize: 26, lineHeight: 1, marginBottom: 2 }}>Ramesh<br/>Pathak</div>
             <div style={{ fontWeight: 400, fontSize: 15, color: '#b6d0e2', marginBottom: 10 }}>Retail Sales Associate</div>
           </div>
           {/* Contact */}
@@ -344,7 +344,7 @@ const Template1 = ({ formData, onEditSummary, onEditEducation, onEditExperience,
             {education.map((edu, index) => (
               <div key={index} style={{ marginBottom: index < education.length - 1 ? 12 : 0 }}>
                 <div style={{ fontSize: 13, color: '#222', marginBottom: 2 }}>
-                  {edu.gradMonth} {edu.gradYear}
+                  {edu.gradMonth} {edu.gradYear} - {edu.endMonth && edu.endYear ? `${edu.endMonth} ${edu.endYear}` : 'Present'}
                 </div>
                 <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 0 }}>
                   {edu.fieldOfStudy}

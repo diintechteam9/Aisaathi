@@ -107,7 +107,7 @@ const ExperienceTab = (props) => {
     <div style={{ maxWidth: 1400, margin: '0 auto', padding: '2rem 1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>
-          Work Experience
+          Experience
         </h1>
       </div>
       

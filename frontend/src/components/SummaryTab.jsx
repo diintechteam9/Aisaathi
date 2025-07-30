@@ -46,7 +46,7 @@ const SummaryTab = (props) => {
     <div style={{ maxWidth: 1400, margin: '0 auto', padding: '2rem 1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>
-          Professional Summary
+          Career Overview
         </h1>
       </div>
       
@@ -88,9 +88,7 @@ const SummaryTab = (props) => {
             <h3 style={{ fontSize: 18, fontWeight: 600, color: '#1e293b', marginBottom: 8, margin: '0 0 8px 0' }}>
               Write a compelling summary of your background and goals
             </h3>
-            <div style={{ color: '#64748b', fontSize: 14, marginBottom: 32, margin: '0 0 10px 0' }}>
-              Describe your professional background, key achievements, and career objectives
-            </div>
+            
             
             {/* Required field indicator */}
             <div style={{ position: 'absolute', top: -40, right: 0, fontSize: 12, fontWeight: 500, color: '#ef4444' }}>

@@ -11,10 +11,10 @@ import FinalizeTab from './FinalizeTab';
 
 const steps = [
   { number: 1, label: 'Templates'},
-  { number: 2, label: 'Profile Info' },
-  { number: 3, label: 'Qualifications' },
-  { number: 4, label: 'Job History' },
-  { number: 5, label: 'Expertise' },
+  { number: 2, label: 'Profile' },
+  { number: 3, label: 'Education' },
+  { number: 4, label: 'Experience' },
+  { number: 5, label: 'Skills' },
   { number: 6, label: 'Career Overview' },
   { number: 7, label: 'Wrap-Up' },
 ];
