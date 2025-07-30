@@ -126,7 +126,7 @@ const LandingPage = () => {
                 <div className="bg-white text-gray-800 p-4 rounded">
                   <div className="border-b-2 border-gray-200 pb-2 mb-4">
                     <h4 className="text-xl font-bold text-gray-900">Ramesh Pathak</h4>
-                    <p className="text-gray-600">Software Engineer | rameshpathak@email.com | (555) 123-4567</p>
+                    <p className="text-gray-600">Software Engineer | ramesh@email.com | +91 9343434343</p>
                   </div>
                   <div className="space-y-3">
                     <div>
