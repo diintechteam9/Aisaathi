@@ -1,0 +1,601 @@
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+const LandingPage = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const navigate = useNavigate()
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  const handleStartBuilding = () => {
+    navigate('/firstpage')
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-100">
+      {/* Navbar */}
+      <nav className="bg-white shadow-lg fixed w-full z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <h1 className="text-2xl font-bold text-violet-600">Aisaathi Resume Builder</h1>
+              </div>
+            </div>
+            
+            {/* Desktop Menu */}
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                <a href="#home" className="text-gray-700 hover:text-violet-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                <a href="#features" className="text-gray-700 hover:text-violet-600 px-3 py-2 rounded-md text-sm font-medium">Features</a>
+                <a href="#how-it-works" className="text-gray-700 hover:text-violet-600 px-3 py-2 rounded-md text-sm font-medium">How it Works</a>
+                <a href="#pricing" className="text-gray-700 hover:text-violet-600 px-3 py-2 rounded-md text-sm font-medium">Pricing</a>
+                <a href="#contact" className="text-gray-700 hover:text-violet-600 px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+              </div>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="hidden md:block">
+              <button className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md text-sm font-medium mr-3">
+                Sign In
+              </button>
+              <button 
+                onClick={handleStartBuilding}
+                className="bg-white hover:bg-gray-50 text-violet-600 border border-violet-600 px-4 py-2 rounded-md text-sm font-medium"
+              >
+                Get Started
+              </button>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={toggleMenu}
+                className="text-gray-700 hover:text-violet-600 focus:outline-none focus:text-violet-600"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+              <a href="#home" className="text-gray-700 hover:text-violet-600 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+              <a href="#features" className="text-gray-700 hover:text-violet-600 block px-3 py-2 rounded-md text-base font-medium">Features</a>
+              <a href="#how-it-works" className="text-gray-700 hover:text-violet-600 block px-3 py-2 rounded-md text-base font-medium">How it Works</a>
+              <a href="#pricing" className="text-gray-700 hover:text-violet-600 block px-3 py-2 rounded-md text-base font-medium">Pricing</a>
+              <a href="#contact" className="text-gray-700 hover:text-violet-600 block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+              <div className="pt-4 pb-3 border-t border-gray-200">
+                                  <button className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full mb-2">
+                    Sign In
+                  </button>
+                  <button 
+                    onClick={handleStartBuilding}
+                    className="bg-white hover:bg-gray-50 text-violet-600 border border-violet-600 px-4 py-2 rounded-md text-sm font-medium w-full"
+                  >
+                    Get Started
+                  </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section */}
+      <section id="home" className="pt-16 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              Build Your Professional Resume with
+              <span className="text-violet-600"> AI Power</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              Create stunning, ATS-friendly resumes in minutes. Our AI analyzes job descriptions and optimizes your resume for maximum impact.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={handleStartBuilding}
+                className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transform hover:scale-105 transition duration-200"
+              >
+                Start Building Now
+              </button>
+              <button className="bg-white hover:bg-gray-50 text-violet-600 border-2 border-violet-600 px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transform hover:scale-105 transition duration-200">
+                Watch Demo
+              </button>
+            </div>
+          </div>
+          
+          {/* Hero Image */}
+          <div className="mt-16">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-4xl mx-auto">
+              <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-lg p-6 text-white">
+                <h3 className="text-2xl font-bold mb-4">Sample AI-Generated Resume</h3>
+                <div className="bg-white text-gray-800 p-4 rounded">
+                  <div className="border-b-2 border-gray-200 pb-2 mb-4">
+                    <h4 className="text-xl font-bold text-gray-900">John Doe</h4>
+                    <p className="text-gray-600">Software Engineer | john.doe@email.com | (555) 123-4567</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <h5 className="font-semibold text-gray-900">Professional Summary</h5>
+                      <p className="text-sm text-gray-700">Experienced software engineer with 5+ years developing scalable web applications...</p>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-gray-900">Key Skills</h5>
+                      <p className="text-sm text-gray-700">JavaScript, React, Node.js, Python, AWS, Docker</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Why Choose Our AI Resume Builder?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Advanced AI technology that understands what employers are looking for
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="bg-gradient-to-br from-violet-50 to-purple-50 p-8 rounded-xl shadow-lg">
+              <div className="bg-violet-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">AI-Powered Optimization</h3>
+              <p className="text-gray-600">
+                Our AI analyzes job descriptions and optimizes your resume with relevant keywords and skills.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-xl shadow-lg">
+              <div className="bg-green-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">ATS-Friendly Templates</h3>
+              <p className="text-gray-600">
+                Professionally designed templates that pass through Applicant Tracking Systems with ease.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-xl shadow-lg">
+              <div className="bg-purple-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Lightning Fast</h3>
+              <p className="text-gray-600">
+                Create a professional resume in under 5 minutes with our streamlined process.
+              </p>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 rounded-xl shadow-lg">
+              <div className="bg-yellow-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Personalized Content</h3>
+              <p className="text-gray-600">
+                AI suggests personalized content based on your experience and target industry.
+              </p>
+            </div>
+
+            {/* Feature 5 */}
+            <div className="bg-gradient-to-br from-red-50 to-pink-50 p-8 rounded-xl shadow-lg">
+              <div className="bg-red-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Secure & Private</h3>
+              <p className="text-gray-600">
+                Your data is encrypted and secure. We never share your personal information.
+              </p>
+            </div>
+
+            {/* Feature 6 */}
+            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-xl shadow-lg">
+              <div className="bg-teal-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17v4a2 2 0 002 2h4M7 7h4m4 0h4" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Multiple Formats</h3>
+              <p className="text-gray-600">
+                Export your resume in PDF, Word, or plain text formats for any application.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              How It Works
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Get your professional resume in just 3 simple steps
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Step 1 */}
+            <div className="text-center">
+              <div className="bg-violet-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-white text-2xl font-bold">1</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Input Your Information</h3>
+              <p className="text-gray-600">
+                Enter your work experience, education, and skills. Our AI will help you describe your achievements effectively.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="text-center">
+              <div className="bg-violet-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-white text-2xl font-bold">2</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">AI Optimization</h3>
+              <p className="text-gray-600">
+                Our AI analyzes job descriptions and optimizes your resume with relevant keywords and formatting.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="text-center">
+              <div className="bg-violet-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-white text-2xl font-bold">3</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Download & Apply</h3>
+              <p className="text-gray-600">
+                Download your professional resume in multiple formats and start applying to your dream job.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              What Our Users Say
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Join thousands of professionals who have landed their dream jobs
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Testimonial 1 */}
+            <div className="bg-gray-50 p-8 rounded-xl">
+              <div className="flex items-center mb-4">
+                <div className="text-yellow-400 flex">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+              <p className="text-gray-600 mb-6">
+                "The AI suggestions were spot-on! I got 3 interviews in the first week after using this resume builder."
+              </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-violet-600 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-white font-bold">S</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900">Sarah Johnson</h4>
+                  <p className="text-gray-600 text-sm">Software Engineer</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 2 */}
+            <div className="bg-gray-50 p-8 rounded-xl">
+              <div className="flex items-center mb-4">
+                <div className="text-yellow-400 flex">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+              <p className="text-gray-600 mb-6">
+                "Finally got my dream job! The ATS optimization feature made all the difference in getting past the initial screening."
+              </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-white font-bold">M</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900">Mike Chen</h4>
+                  <p className="text-gray-600 text-sm">Marketing Manager</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="bg-gray-50 p-8 rounded-xl">
+              <div className="flex items-center mb-4">
+                <div className="text-yellow-400 flex">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+              <p className="text-gray-600 mb-6">
+                "The templates are beautiful and professional. I love how easy it is to customize everything."
+              </p>
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-white font-bold">E</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900">Emily Rodriguez</h4>
+                  <p className="text-gray-600 text-sm">UX Designer</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Choose Your Plan
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Start free and upgrade when you need more features
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Free Plan */}
+            <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-gray-200">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Free</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-gray-900">$0</span>
+                <span className="text-gray-600">/month</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  1 Resume
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Basic Templates
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  PDF Export
+                </li>
+              </ul>
+              <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200">
+                Get Started Free
+              </button>
+            </div>
+
+            {/* Pro Plan */}
+            <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-violet-600 relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <span className="bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-semibold">Most Popular</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Pro</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-gray-900">$9</span>
+                <span className="text-gray-600">/month</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Unlimited Resumes
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Premium Templates
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI Optimization
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Multiple Formats
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Priority Support
+                </li>
+              </ul>
+              <button className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-semibold transition duration-200">
+                Start Pro Trial
+              </button>
+            </div>
+
+            {/* Enterprise Plan */}
+            <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-gray-200">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Enterprise</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-gray-900">$29</span>
+                <span className="text-gray-600">/month</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Everything in Pro
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Team Collaboration
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Custom Branding
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  API Access
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Dedicated Support
+                </li>
+              </ul>
+              <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200">
+                Contact Sales
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-violet-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Ready to Build Your Professional Resume?
+          </h2>
+                      <p className="text-xl text-violet-100 mb-8 max-w-3xl mx-auto">
+            Join thousands of professionals who have landed their dream jobs with our AI-powered resume builder.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={handleStartBuilding}
+              className="bg-white hover:bg-gray-100 text-violet-600 px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transform hover:scale-105 transition duration-200"
+            >
+              Start Building Now
+            </button>
+            <button className="bg-transparent hover:bg-violet-700 text-white border-2 border-white px-8 py-4 rounded-lg text-lg font-semibold transform hover:scale-105 transition duration-200">
+              View Templates
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer id="contact" className="bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Company Info */}
+            <div className="col-span-1 md:col-span-2">
+              <h3 className="text-2xl font-bold text-white mb-4">AI Resume Builder</h3>
+              <p className="text-gray-400 mb-6 max-w-md">
+                The most advanced AI-powered resume builder that helps you create professional resumes that get you hired.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-white">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                  </svg>
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                  </svg>
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Product</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white">Features</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Templates</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Pricing</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">API</a></li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Support</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white">Help Center</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Contact Us</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Terms of Service</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+            <p className="text-gray-400">
+              © 2024 AI Resume Builder. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+export default LandingPage
