@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const degrees = [
   'Bachelor of Science',
@@ -34,6 +34,19 @@ const EducationTab = (props) => {
   const { onGoBack, onNext, formData, updateFormData, selectedTemplate, fullFormData } = props;
   const isEditingMode = !onNext || !onGoBack;
   const [showCoursework, setShowCoursework] = useState([false]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const educations = formData && formData.length > 0 ? formData : [{ ...emptyEducation }];
 
@@ -86,25 +99,51 @@ const EducationTab = (props) => {
   };
 
   return (
-    <div style={{ maxWidth: 1400, margin: '0 auto', padding: '2rem 1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>
+    <div style={{ 
+      maxWidth: 1400, 
+      margin: '0 auto', 
+      padding: isMobile ? '1rem 0.5rem' : '2rem 1rem',
+      width: '100%',
+      boxSizing: 'border-box'
+    }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px',
+        marginLeft: isMobile ? '90px' : '0px',
+      }}>
+        <h1 style={{ 
+          marginTop: isMobile ? '-120px' : '0px',
+          fontSize: isMobile ? 25 : 32, 
+          fontWeight: 700, 
+          margin: 0 
+        }}>
           Education
         </h1>
       </div>
       
       {/* Main content area with flex layout */}
-      <div style={{ display: 'flex', gap: '20px', marginBottom: 32 }}>
+      <div style={{ 
+        display: 'flex', 
+        gap: isMobile ? '0px' : '20px', 
+        marginBottom: 32,
+        flexDirection: isMobile ? 'column' : 'row',
+        width: '100%'
+      }}>
         
         {/* Left section - Form */}
         <div style={{ 
-          flex: 3, 
+          flex: isMobile ? 'none' : 3, 
           background: '#f8f9fa', 
           borderRadius: 16, 
-          padding: '16px',
-          height: '600px',
-          width:'420px',
-          overflowY: 'auto'
+          padding: isMobile ? '12px' : '16px',
+          height: isMobile ? '620px' : '600px',
+          width: isMobile ? '100%' : '420px',
+          maxWidth: isMobile ? '100%' : '420px',
+          overflowY: 'auto',
+          boxSizing: 'border-box',
+          marginTop: isMobile ? '-45px' : '0px',
         }}>
           {!isEditingMode && (
             <button
@@ -112,8 +151,8 @@ const EducationTab = (props) => {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#64748b',
-                fontSize: 14,
+                color: '#2563eb',
+                fontSize: isMobile ? 12 : 14,
                 fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
@@ -128,33 +167,55 @@ const EducationTab = (props) => {
           )}
           
           <div style={{ position: 'relative' }}>
-            <h3 style={{ fontSize: 18, fontWeight: 600, color: '#1e293b', marginBottom: 8, margin: '0 0 8px 0' }}>
+            <h3 style={{ 
+              fontSize: isMobile ? 16 : 18, 
+              fontWeight: 600, 
+              color: '#1e293b', 
+              marginBottom: 8, 
+              margin: '0 0 8px 0' 
+            }}>
              Add your educational qualifications
             </h3>
             
             {/* Required field indicator */}
-            <div style={{ position: 'absolute', top: -40, right: 0, fontSize: 12, fontWeight: 500, color: '#ef4444',}}>
+            <div style={{ 
+              position: 'absolute', 
+              top: isMobile ? -42 : -40, 
+              right: 0, 
+              fontSize: 12, 
+              fontWeight: 500, 
+              color: '#ef4444',
+            }}>
               * indicates a required field
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
               {educations.map((form, idx) => (
-                <div key={idx} style={{ position: 'relative', border: '1.5px solid #d1d5db', borderRadius: 12, padding: 24, background: '#fff', marginBottom: 16 }}>
+                <div key={idx} style={{ 
+                  position: 'relative', 
+                  border: '1.5px solid #d1d5db', 
+                  borderRadius: 12, 
+                  padding: isMobile ? '16px' : '24px', 
+                  background: '#fff', 
+                  marginBottom: 16,
+                  width: '100%',
+                  boxSizing: 'border-box'
+                }}>
                   {idx === 0 && (
                     <button
                       type="button"
                       onClick={handleAddEducation}
                       style={{
                         position: 'absolute',
-                        top: 16,
-                        right: 16,
+                        top: isMobile ? 12 : 16,
+                        right: isMobile ? 12 : 16,
                         background: '#2563eb',
                         color: 'white',
                         border: 'none',
                         borderRadius: '50%',
-                        width: 32,
-                        height: 32,
-                        fontSize: 18,
+                        width: isMobile ? 28 : 32,
+                        height: isMobile ? 28 : 32,
+                        fontSize: isMobile ? 16 : 18,
                         fontWeight: 700,
                         cursor: 'pointer',
                         display: 'flex',
@@ -167,9 +228,9 @@ const EducationTab = (props) => {
                   )}
                   
                   {/* Two column layout for form fields */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>
                     {/* Row 1: School Name and School Location */}
-                    <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
                         <label style={{ fontWeight: 600, fontSize: 13 }}>School/University Name *</label>
                         <input
@@ -179,7 +240,7 @@ const EducationTab = (props) => {
                           onChange={(e) => handleChange(idx, e)}
                           placeholder="Enter school or university name"
                           required
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                         />
                       </div>
                       <div style={{ flex: 1 }}>
@@ -190,13 +251,13 @@ const EducationTab = (props) => {
                           value={form.schoolLocation}
                           onChange={(e) => handleChange(idx, e)}
                           placeholder="City, State"
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                         />
                       </div>
                     </div>
 
                     {/* Row 2: Field of Study and Percentage/CGPA */}
-                    <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
                         <label style={{ fontWeight: 600, fontSize: 13 }}>Field of Study *</label>
                         <input
@@ -206,7 +267,7 @@ const EducationTab = (props) => {
                           onChange={(e) => handleChange(idx, e)}
                           placeholder="e.g., Computer Science, Business Administration"
                           required
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                         />
                       </div>
                       <div style={{ flex: 1 }}>
@@ -217,20 +278,20 @@ const EducationTab = (props) => {
                           value={form.percentage}
                           onChange={(e) => handleChange(idx, e)}
                           placeholder="e.g., 85%"
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                         />
                       </div>
                     </div>
 
                     {/* Row 3: Start Month and Start Year */}
-                    <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
                         <label style={{ fontWeight: 600, fontSize: 13 }}>Start Month</label>
                         <select
                           name="gradMonth"
                           value={form.gradMonth}
                           onChange={(e) => handleChange(idx, e)}
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                         >
                           <option value="">Select month</option>
                           {months.map((month) => (
@@ -244,7 +305,7 @@ const EducationTab = (props) => {
                           name="gradYear"
                           value={form.gradYear}
                           onChange={(e) => handleChange(idx, e)}
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                         >
                           <option value="">Select year</option>
                           {years.map((year) => (
@@ -255,14 +316,14 @@ const EducationTab = (props) => {
                     </div>
 
                     {/* Row 4: End Month and End Year */}
-                    <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
                         <label style={{ fontWeight: 600, fontSize: 13 }}>End Month</label>
                         <select
                           name="endMonth"
                           value={form.endMonth}
                           onChange={(e) => handleChange(idx, e)}
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                         >
                           <option value="">Select month</option>
                           {months.map((month) => (
@@ -276,7 +337,7 @@ const EducationTab = (props) => {
                           name="endYear"
                           value={form.endYear}
                           onChange={(e) => handleChange(idx, e)}
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                         >
                           <option value="">Select year</option>
                           {years.map((year) => (
@@ -289,7 +350,13 @@ const EducationTab = (props) => {
                     {/* Row 5: Coursework Section */}
                     <div style={{ width: '100%' }}>
                       <div
-                        style={{ cursor: 'pointer', color: '#2563eb', fontWeight: 600, fontSize: 16, marginBottom: 8 }}
+                        style={{ 
+                          cursor: 'pointer', 
+                          color: '#2563eb', 
+                          fontWeight: 600, 
+                          fontSize: isMobile ? 14 : 16, 
+                          marginBottom: 8 
+                        }}
                         onClick={() => handleToggleCoursework(idx)}
                       >
                         {showCoursework[idx] ? '▼' : '▶'} Add extra courses you're proud of
@@ -302,7 +369,7 @@ const EducationTab = (props) => {
                             onChange={(e) => handleChange(idx, e)}
                             placeholder="List any additional coursework, achievements, or certifications..."
                             rows={3}
-                            style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, resize: 'vertical' }}
+                            style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, resize: 'vertical', boxSizing: 'border-box' }}
                           />
                           <div style={{ marginTop: 6, fontSize: 12 }}>
                             <span style={{ color: '#2563eb', fontWeight: 600, cursor: 'pointer' }}>Look</span> here for sample resume references
@@ -367,30 +434,32 @@ Advanced Excel – Microsoft </div>
         </div>
 
         {/* Right section - Template Preview with User Data */}
-        <div style={{ 
-          flex: 1, 
-          background: '#fff', 
-          borderRadius: 16, 
-          boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
-          padding: '20px', 
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          height: '700px',
-          position: 'relative',
-          marginTop:'-80px'
-        }}>
+        {!isMobile && (
           <div style={{ 
-            transform: 'scale(0.75)', 
-            transformOrigin: 'top center',
-            maxWidth: '100%',
-            overflow: 'auto',
-            marginTop: '220px',
-            maxHeight:'1000px',
+            flex: 1, 
+            background: '#fff', 
+            borderRadius: 16, 
+            boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
+            padding: '20px', 
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            height: '700px',
+            position: 'relative',
+            marginTop:'-80px'
           }}>
-            {renderTemplate()}
+            <div style={{ 
+              transform: 'scale(0.75)', 
+              transformOrigin: 'top center',
+              maxWidth: '100%',
+              overflow: 'auto',
+              marginTop: '220px',
+              maxHeight:'1000px',
+            }}>
+              {renderTemplate()}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

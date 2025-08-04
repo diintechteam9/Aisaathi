@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import html2pdf from 'html2pdf.js';
 import Template1 from './Templates/Template1';
 import Template2 from './Templates/Template2';
@@ -12,6 +12,19 @@ const FinalizeTab = (props) => {
   const { onGoBack, selectedTemplate, formData, updateSummary, updateEducation, updateExperience, updateSkills, updateHeading } = props;
   const [editingSection, setEditingSection] = useState(null);
   const templateRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Handler to open summary editing
   const handleEditSummary = () => setEditingSection('summary');
@@ -217,10 +230,27 @@ const FinalizeTab = (props) => {
   };
 
   return (
-    <div style={{ maxWidth: 1400, margin: '0 auto', padding: '2rem 1rem' }}>
+    <div style={{ 
+      maxWidth: 1400, 
+      margin: '0 auto', 
+      padding: isMobile ? '1rem 0.5rem' : '2rem 1rem',
+      width: '100%',
+      boxSizing: 'border-box'
+    }}>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginLeft:'-40px'}}>
-        <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px', 
+        marginLeft: isMobile ? '60px' : '-40px'
+      }}>
+        <h1 style={{ 
+          marginTop: isMobile ? '-120px' : '0px',
+          fontSize: isMobile ? 18 : 32, 
+          fontWeight: 700, 
+          margin: 0 
+        }}>
           Wrap-Up Your Resume
         </h1>
         <button
@@ -231,11 +261,10 @@ const FinalizeTab = (props) => {
             background: '#6b3b7a',
             color: 'white',
             fontWeight: 700,
-            fontSize: 18,
+            fontSize: isMobile ? 16 : 18,
             borderRadius: 30,
-            padding: '10px 36px',
+            padding: isMobile ? '8px 24px' : '10px 36px',
             cursor: 'pointer',
-
           }}
         >
           Download
@@ -243,41 +272,61 @@ const FinalizeTab = (props) => {
       </div>
       
       {/* Main content area with flex layout */}
-      <div style={{ display: 'flex', gap: '20px', marginBottom: 32 }}>
+      <div style={{ 
+        display: 'flex', 
+        gap: isMobile ? '0px' : '20px', 
+        marginBottom: 32,
+        flexDirection: isMobile ? 'column' : 'row',
+        width: '100%'
+      }}>
         
         {/* Left section - Editing panel */}
-        <div style={{ 
-          flex: 3, 
-          background: '#f8f9fa', 
-          borderRadius: 16, 
-          padding: '16px',
-          height: '600px',
-          width:'420px',
-          overflowY: 'auto',
-          marginLeft:'-46px'
-        }}>
-          {renderLeftPanel()}
-        </div>
+        {!isMobile && (
+          <div style={{ 
+            flex: 3, 
+            background: '#f8f9fa', 
+            borderRadius: 16, 
+            padding: '16px',
+            height: '600px',
+            width: '420px',
+            overflowY: 'auto',
+            marginLeft: '-46px',
+            boxSizing: 'border-box'
+          }}>
+            {renderLeftPanel()}
+          </div>
+        )}
 
         {/* Right section - Template Preview with User Data */}
         <div style={{ 
-          flex: 1, 
+          flex: isMobile ? 'none' : 1, 
           background: '#fff', 
           borderRadius: 16, 
           boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
-          padding: '20px', 
+          padding: isMobile ? '0px' : '20px', 
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'center',
-          height: '600px',
+          height: isMobile ? '700px' : '600px',
+          width: isMobile ? '100%' : 'auto',
           position: 'relative',
+          marginTop: isMobile ? '75px' : '0px',
+          boxSizing: 'border-box'
         }}>
           <div style={{ 
-            transform: selectedTemplate === 1 ? 'scale(0.5)' : 'scale(0.6)', 
+            transform: isMobile 
+              ? (selectedTemplate === 1 ? 'scale(0.2)' : 'scale(0.2)') 
+              : (selectedTemplate === 1 ? 'scale(0.5)' : 'scale(0.6)'), 
             transformOrigin: 'top center',
             maxWidth: '100%',
             overflow: 'auto',
-            marginTop: selectedTemplate === 1 ? '350px' : '350px'
+            marginTop: isMobile 
+              ? (selectedTemplate === 1 ? '50px' : '50px') 
+              : (selectedTemplate === 1 ? '350px' : '350px'),
+            maxheight:isMobile ? '400px' : '100%',
+            width: isMobile?'100%':'100%',
+            boxSizing: 'border-box',
+           
           }}>
             {renderTemplate()}
           </div>

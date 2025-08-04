@@ -1,9 +1,22 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const HeadingTab = (props) => {
   const { onGoBack, onNext, formData, updateFormData, selectedTemplate, fullFormData } = props;
   const isEditingMode = !onNext || !onGoBack; // Check if we're in editing mode
   const fileInputRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Initialize with formData if it exists, otherwise use default
   const heading = formData || {
@@ -67,25 +80,48 @@ const HeadingTab = (props) => {
   };
 
   return (
-    <div style={{ maxWidth: 1400, margin: '0 auto', padding: '2rem 1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>
+    <div style={{ 
+      maxWidth: 1400, 
+      margin: '0 auto', 
+      padding: isMobile ? '1rem 0.5rem' : '2rem 1rem',
+      width: '100%',
+      boxSizing: 'border-box'
+    }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px',
+        marginLeft: isMobile ? '90px' : '0px',
+      }}>
+        <h1 style={{ 
+          marginTop:isMobile ? '-120px' : '0px',
+          fontSize:isMobile? 25 : 32, fontWeight: 700, margin: 0 }}>
           Profile 
         </h1>
       </div>
       
       {/* Main content area with flex layout */}
-      <div style={{ display: 'flex', gap: '20px', marginBottom: 32 }}>
+      <div style={{ 
+        display: 'flex', 
+        gap: isMobile ? '0px' : '20px', 
+        marginBottom: 32,
+        flexDirection: isMobile ? 'column' : 'row',
+        width: '100%'
+      }}>
         
         {/* Left section - Form */}
         <div style={{ 
-          flex: 3, 
+          flex: isMobile ? 'none' : 3, 
           background: '#f8f9fa', 
           borderRadius: 16, 
-          padding: '16px',
-          height: '600px',
-          width:'420px',
-          overflowY: 'auto'
+          padding: isMobile ? '12px' : '16px',
+          height: isMobile ? '560px' : '600px',
+          width: isMobile ? '100%' : '420px',
+          maxWidth: isMobile ? '100%' : '420px',
+          overflowY: 'auto',
+          boxSizing: 'border-box',
+          marginTop:isMobile ? '-45px' : '0px',
         }}>
           {!isEditingMode && (
             <button
@@ -95,7 +131,7 @@ const HeadingTab = (props) => {
                 color: '#2563eb',
                 textDecoration: 'none',
                 fontWeight: 500,
-                fontSize: 16,
+                fontSize: isMobile? 12 :16,
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
@@ -107,15 +143,25 @@ const HeadingTab = (props) => {
             </button>
           )}
           {!isEditingMode && (
-            <h1 style={{ fontSize: 30, fontWeight: 700, margin: '0rem 0 0.5rem' }}>
+            <h1 style={{ 
+              fontSize: isMobile ? 20 : 30, fontWeight: 700, margin: '0rem 0 0.5rem' }}>
               Let's start with the basics
             </h1>
           )}
-          <div style={{ background: '#f8faff', borderRadius: 16, padding: '28px 24px 24px 24px', marginBottom: 32, boxShadow: '0 2px 12px rgba(10,24,51,0.04)', position: 'relative' }}>
+          <div style={{ 
+            background: '#f8faff', 
+            borderRadius: 16, 
+            padding: isMobile ? '20px 16px 16px 16px' : '28px 24px 24px 24px', 
+            marginBottom: 32, 
+            boxShadow: '0 2px 12px rgba(10,24,51,0.04)', 
+            position: 'relative',
+            width: '100%',
+            boxSizing: 'border-box'
+          }}>
             {!isEditingMode && (
               <div style={{ 
                 position: 'absolute', 
-                top: -70, 
+                top: isMobile ? -58 : -70, 
                 right: 0, 
                 color: '#ef4444', 
                 fontSize: 12, 
@@ -123,14 +169,25 @@ const HeadingTab = (props) => {
               }}>* indicates a required field</div>
             )}
             {/* Photo Upload - First Row */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24 }}>
-                <div style={{ position: 'relative', width: 110, height: 110, marginBottom: 10 }}>
-                  <div style={{ width: 110, height: 110, borderRadius: '50%', background: '#f1f5f9', border: '2.5px solid #2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', boxShadow: '0 2px 8px rgba(30,41,59,0.08)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginBottom: 1, width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: isMobile ? 16 : 24, width: '100%' }}>
+                <div style={{ position: 'relative', width: isMobile ? 80 : 110, height: isMobile ? 80 : 110, marginBottom: 10 }}>
+                  <div style={{ 
+                    width: isMobile ? 80 : 110, 
+                    height: isMobile ? 80 : 110, 
+                    borderRadius: '50%', 
+                    background: '#f1f5f9', 
+                    border: '2.5px solid #2563eb', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    overflow: 'hidden', 
+                    boxShadow: '0 2px 8px rgba(30,41,59,0.08)' 
+                  }}>
                     {heading.photo ? (
                       <img src={heading.photo} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                     ) : (
-                      <span role="img" aria-label="avatar" style={{ fontSize: 48, color: '#cbd5e1' }}>👤</span>
+                      <span role="img" aria-label="avatar" style={{ fontSize: isMobile ? 32 : 48, color: '#cbd5e1' }}>👤</span>
                     )}
                   </div>
                   <button
@@ -144,9 +201,9 @@ const HeadingTab = (props) => {
                       color: 'white',
                       border: 'none',
                       borderRadius: '50%',
-                      width: 38,
-                      height: 38,
-                      fontSize: 20,
+                      width: isMobile ? 28 : 38,
+                      height: isMobile ? 28 : 38,
+                      fontSize: isMobile ? 14 : 20,
                       fontWeight: 700,
                       cursor: 'pointer',
                       boxShadow: '0 2px 8px rgba(30,41,59,0.10)',
@@ -159,7 +216,14 @@ const HeadingTab = (props) => {
                   >
                     <span role="img" aria-label="upload">📷</span>
                   </button>
-                  <div style={{ color: '#64748b', fontSize: 10, fontWeight: 500, marginLeft: 0, whiteSpace: 'nowrap', marginTop: 8 }}>Upload a passport size photo</div>
+                  <div style={{ 
+                    color: '#64748b', 
+                    fontSize: isMobile ? 8 : 10, 
+                    fontWeight: 500, 
+                    marginLeft: 0, 
+                    whiteSpace: 'nowrap', 
+                    marginTop: 8 
+                  }}>Upload a passport size photo</div>
 
                   <input
                     ref={fileInputRef}
@@ -169,7 +233,7 @@ const HeadingTab = (props) => {
                     style={{ display: 'none' }}
                   />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1, marginLeft: '35px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 18, flex: 1, marginLeft: isMobile ? '20px' : '35px' }}>
                   <div>
                     <label style={{ fontWeight: 600, fontSize: 13 }}>First Name *</label>
                     <input
@@ -198,9 +262,9 @@ const HeadingTab = (props) => {
               </div>
             </div>
             {/* Form fields */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>
               {/* Row 1: Profession and City */}
-              <div style={{ display: 'flex', gap: 12 }}>
+              <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                 <div style={{ flex: 1 }}>
                   <label style={{ fontWeight: 600, fontSize: 13 }}>Profession *</label>
                   <input
@@ -210,7 +274,7 @@ const HeadingTab = (props) => {
                     onChange={handleChange}
                     placeholder="e.g. Software Engineer"
                     required
-                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                   />
                 </div>
                 <div style={{ flex: 1 }}>
@@ -222,13 +286,13 @@ const HeadingTab = (props) => {
                     onChange={handleChange}
                     placeholder="Nodia"
                     required
-                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
 
               {/* Row 2: Country and Pin Code */}
-              <div style={{ display: 'flex', gap: 12 }}>
+              <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                 <div style={{ flex: 1 }}>
                   <label style={{ fontWeight: 600, fontSize: 13 }}>Country *</label>
                   <input
@@ -238,7 +302,7 @@ const HeadingTab = (props) => {
                     onChange={handleChange}
                     placeholder="India"
                     required
-                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                   />
                 </div>
                 <div style={{ flex: 1 }}>
@@ -250,13 +314,13 @@ const HeadingTab = (props) => {
                     onChange={handleChange}
                     placeholder="201102"
                     required
-                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
 
               {/* Row 3: Phone and Email */}
-              <div style={{ display: 'flex', gap: 12 }}>
+              <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                 <div style={{ flex: 1 }}>
                   <label style={{ fontWeight: 600, fontSize: 13 }}>Phone *</label>
                   <input
@@ -266,7 +330,7 @@ const HeadingTab = (props) => {
                     onChange={handleChange}
                     placeholder="+91 98765 43210"
                     required
-                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                   />
                 </div>
                 <div style={{ flex: 1 }}>
@@ -278,7 +342,7 @@ const HeadingTab = (props) => {
                     onChange={handleChange}
                     placeholder="aaryasharma@gmail.com"
                     required
-                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                    style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
@@ -324,31 +388,33 @@ const HeadingTab = (props) => {
         </div>
 
         {/* Right section - Template Preview with User Data */}
-        <div style={{ 
-          flex: 1, 
-          background: '#fff', 
-          borderRadius: 16, 
-          boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
-          padding: '20px', 
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          height: '700px',
-          position: 'relative',
-          marginTop:'-80px'
-        }}>
+        {!isMobile && (
           <div style={{ 
-            transform: 'scale(0.75)', 
-            transformOrigin: 'top center',
-            maxWidth: '100%',
-            overflow: 'auto',
-            marginTop: '220px',
-            maxHeight:'1000px'
-
+            flex: 1, 
+            background: '#fff', 
+            borderRadius: 16, 
+            boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
+            padding: '20px', 
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            height: '700px',
+            position: 'relative',
+            marginTop:'-80px'
           }}>
-            {renderTemplate()}
+            <div style={{ 
+              transform: 'scale(0.75)', 
+              transformOrigin: 'top center',
+              maxWidth: '100%',
+              overflow: 'auto',
+              marginTop: '220px',
+              maxHeight:'1000px'
+
+            }}>
+              {renderTemplate()}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

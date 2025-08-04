@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -32,6 +32,19 @@ const emptyExperience = {
 const ExperienceTab = (props) => {
   const { onGoBack, onNext, formData, updateFormData, selectedTemplate, fullFormData } = props;
   const isEditingMode = !onNext || !onGoBack;
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const experiences = formData && formData.length > 0 ? formData : [{ ...emptyExperience }];
 
@@ -104,25 +117,51 @@ const ExperienceTab = (props) => {
   };
 
   return (
-    <div style={{ maxWidth: 1400, margin: '0 auto', padding: '2rem 1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>
+    <div style={{ 
+      maxWidth: 1400, 
+      margin: '0 auto', 
+      padding: isMobile ? '1rem 0.5rem' : '2rem 1rem',
+      width: '100%',
+      boxSizing: 'border-box'
+    }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px',
+        marginLeft: isMobile ? '90px' : '0px',
+      }}>
+        <h1 style={{ 
+          marginTop: isMobile ? '-120px' : '0px',
+          fontSize: isMobile ? 25 : 32, 
+          fontWeight: 700, 
+          margin: 0 
+        }}>
           Experience
         </h1>
       </div>
       
       {/* Main content area with flex layout */}
-      <div style={{ display: 'flex', gap: '20px', marginBottom: 32 }}>
+      <div style={{ 
+        display: 'flex', 
+        gap: isMobile ? '0px' : '20px', 
+        marginBottom: 32,
+        flexDirection: isMobile ? 'column' : 'row',
+        width: '100%'
+      }}>
         
         {/* Left section - Form */}
         <div style={{ 
-          flex: 3, 
+          flex: isMobile ? 'none' : 3, 
           background: '#f8f9fa', 
           borderRadius: 16, 
-          padding: '16px',
-          height: '600px',
-          width:'420px',
-          overflowY: 'auto'
+          padding: isMobile ? '12px' : '16px',
+          height: isMobile ? '620px' : '600px',
+          width: isMobile ? '100%' : '420px',
+          maxWidth: isMobile ? '100%' : '420px',
+          overflowY: 'auto',
+          boxSizing: 'border-box',
+          marginTop: isMobile ? '-45px' : '0px',
         }}>
           {!isEditingMode && (
             <button
@@ -130,8 +169,8 @@ const ExperienceTab = (props) => {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#64748b',
-                fontSize: 14,
+                color: '#2563eb',
+                fontSize: isMobile ? 12 : 14,
                 fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
@@ -146,33 +185,55 @@ const ExperienceTab = (props) => {
           )}
           
           <div style={{ position: 'relative' }}>
-            <h3 style={{ fontSize: 18, fontWeight: 600, color: '#1e293b', marginBottom: 8, margin: '0 0 8px 0' }}>
+            <h3 style={{ 
+              fontSize: isMobile ? 16 : 18, 
+              fontWeight: 600, 
+              color: '#1e293b', 
+              marginBottom: 8, 
+              margin: '0 0 8px 0' 
+            }}>
               Add your professional experience and achievements
             </h3>
             
             {/* Required field indicator */}
-            <div style={{ position: 'absolute', top: -40, right: 0, fontSize: 12, fontWeight: 500, color: '#ef4444', }}>
+            <div style={{ 
+              position: 'absolute', 
+              top: isMobile ? -42 : -40, 
+              right: 0, 
+              fontSize: 12, 
+              fontWeight: 500, 
+              color: '#ef4444',
+            }}>
               * indicates a required field
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
               {experiences.map((exp, idx) => (
-                <div key={idx} style={{ position: 'relative', border: '1.5px solid #d1d5db', borderRadius: 12, padding: 24, background: '#fff', marginBottom: 16 }}>
+                <div key={idx} style={{ 
+                  position: 'relative', 
+                  border: '1.5px solid #d1d5db', 
+                  borderRadius: 12, 
+                  padding: isMobile ? '16px' : '24px', 
+                  background: '#fff', 
+                  marginBottom: 16,
+                  width: '100%',
+                  boxSizing: 'border-box'
+                }}>
                   {idx === 0 && (
                     <button
                       type="button"
                       onClick={handleAddExperience}
                       style={{
                         position: 'absolute',
-                        top: 16,
-                        right: 16,
+                        top: isMobile ? 12 : 16,
+                        right: isMobile ? 12 : 16,
                         background: '#2563eb',
                         color: 'white',
                         border: 'none',
                         borderRadius: '50%',
-                        width: 32,
-                        height: 32,
-                        fontSize: 18,
+                        width: isMobile ? 28 : 32,
+                        height: isMobile ? 28 : 32,
+                        fontSize: isMobile ? 16 : 18,
                         fontWeight: 700,
                         cursor: 'pointer',
                         display: 'flex',
@@ -185,9 +246,9 @@ const ExperienceTab = (props) => {
                   )}
                   
                   {/* Two column layout for form fields */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>
                     {/* Row 1: Job Title and Job Type */}
-                    <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
                         <label style={{ fontWeight: 600, fontSize: 13 }}>Job Title *</label>
                         <input
@@ -197,7 +258,7 @@ const ExperienceTab = (props) => {
                           onChange={(e) => handleChange(idx, 'jobTitle', e.target.value)}
                           placeholder="e.g., Software Engineer"
                           required
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                         />
                       </div>
                       <div style={{ flex: 1 }}>
@@ -206,7 +267,7 @@ const ExperienceTab = (props) => {
                           name="jobType"
                           value={exp.jobType}
                           onChange={(e) => handleChange(idx, 'jobType', e.target.value)}
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                         >
                           {jobTypes.map((type) => (
                             <option key={type} value={type}>{type}</option>
@@ -216,7 +277,7 @@ const ExperienceTab = (props) => {
                     </div>
 
                     {/* Row 2: Company Name and Location */}
-                    <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
                         <label style={{ fontWeight: 600, fontSize: 13 }}>Company Name *</label>
                         <input
@@ -226,7 +287,7 @@ const ExperienceTab = (props) => {
                           onChange={(e) => handleChange(idx, 'companyName', e.target.value)}
                           placeholder="Company Name"
                           required
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                         />
                       </div>
                       <div style={{ flex: 1 }}>
@@ -237,20 +298,20 @@ const ExperienceTab = (props) => {
                           value={exp.location}
                           onChange={(e) => handleChange(idx, 'location', e.target.value)}
                           placeholder="City, State"
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13 }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                         />
                       </div>
                     </div>
 
                     {/* Row 3: Start Month and Start Year */}
-                    <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
                         <label style={{ fontWeight: 600, fontSize: 13 }}>Start Month</label>
                         <select
                           name="startMonth"
                           value={exp.startMonth}
                           onChange={(e) => handleChange(idx, 'startMonth', e.target.value)}
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                         >
                           <option value="">Select month</option>
                           {months.map((month) => (
@@ -264,7 +325,7 @@ const ExperienceTab = (props) => {
                           name="startYear"
                           value={exp.startYear}
                           onChange={(e) => handleChange(idx, 'startYear', e.target.value)}
-                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                          style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                         >
                           <option value="">Select year</option>
                           {years.map((year) => (
@@ -276,14 +337,14 @@ const ExperienceTab = (props) => {
 
                     {/* Row 4: End Month and End Year (only if not current role) */}
                     {!exp.currentRole && (
-                      <div style={{ display: 'flex', gap: 12 }}>
+                      <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                         <div style={{ flex: 1 }}>
                           <label style={{ fontWeight: 600, fontSize: 13 }}>End Month</label>
                           <select
                             name="endMonth"
                             value={exp.endMonth}
                             onChange={(e) => handleChange(idx, 'endMonth', e.target.value)}
-                            style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                            style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                           >
                             <option value="">Select month</option>
                             {months.map((month) => (
@@ -297,7 +358,7 @@ const ExperienceTab = (props) => {
                             name="endYear"
                             value={exp.endYear}
                             onChange={(e) => handleChange(idx, 'endYear', e.target.value)}
-                            style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white' }}
+                            style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                           >
                             <option value="">Select year</option>
                             {years.map((y) => (
@@ -317,7 +378,7 @@ const ExperienceTab = (props) => {
                         onChange={(e) => handleChange(idx, 'jobDescription', e.target.value)}
                         placeholder="Describe your responsibilities, achievements, and key contributions..."
                         rows={4}
-                        style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, resize: 'vertical' }}
+                        style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, resize: 'vertical', boxSizing: 'border-box' }}
                       />
                     </div>
 
@@ -389,30 +450,32 @@ const ExperienceTab = (props) => {
         </div>
 
         {/* Right section - Template Preview with User Data */}
-        <div style={{ 
-          flex: 1, 
-          background: '#fff', 
-          borderRadius: 16, 
-          boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
-          padding: '20px', 
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          height: '700px',
-          position: 'relative',
-          marginTop:'-80px'
-        }}>
+        {!isMobile && (
           <div style={{ 
-            transform: 'scale(0.75)', 
-            transformOrigin: 'top center',
-            maxWidth: '100%',
-            overflow: 'auto',
-            marginTop: '220px',
-            maxHeight:'1000px'
+            flex: 1, 
+            background: '#fff', 
+            borderRadius: 16, 
+            boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
+            padding: '20px', 
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            height: '700px',
+            position: 'relative',
+            marginTop:'-80px'
           }}>
-            {renderTemplate()}
+            <div style={{ 
+              transform: 'scale(0.75)', 
+              transformOrigin: 'top center',
+              maxWidth: '100%',
+              overflow: 'auto',
+              marginTop: '220px',
+              maxHeight:'1000px'
+            }}>
+              {renderTemplate()}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
