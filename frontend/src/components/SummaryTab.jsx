@@ -68,7 +68,7 @@ const SummaryTab = (props) => {
         justifyContent: 'space-between', 
         alignItems: 'center', 
         marginBottom: '20px',
-        marginLeft: isMobile ? '60px' : '0px',
+        marginLeft: isMobile ? '60px' : '10px',
       }}>
         <h1 style={{ 
           marginTop: isMobile ? '-120px' : '0px',
@@ -95,12 +95,13 @@ const SummaryTab = (props) => {
           background: '#f8f9fa', 
           borderRadius: 16, 
           padding: isMobile ? '12px' : '16px',
-          height: isMobile ? '420px' : '600px',
+          height: isMobile ? '450px' : '600px',
           width: isMobile ? '100%' : '420px',
           maxWidth: isMobile ? '100%' : '420px',
           overflowY: 'auto',
           boxSizing: 'border-box',
           marginTop: isMobile ? '-45px' : '0px',
+          marginLeft: isMobile ? '0px' : '10px',
         }}>
           {!isEditingMode && (
             <button
@@ -172,7 +173,7 @@ const SummaryTab = (props) => {
                     outline: 'none',
                     background: 'white',
                     resize: 'vertical',
-                    minHeight: 100,
+                    minHeight: 200,
                     boxSizing: 'border-box'
                   }}
                 />
@@ -221,30 +222,33 @@ const SummaryTab = (props) => {
 
         {/* Right section - Template Preview with User Data */}
         {!isMobile && (
-          <div style={{ 
-            flex: 1, 
-            background: '#fff', 
-            borderRadius: 16, 
-            boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
-            padding: '20px', 
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            height: '700px',
-            position: 'relative',
-            marginTop:'-80px'
-          }}>
+          // <div style={{ 
+          //   flex: 1, 
+          //   background: '#fff', 
+          //   borderRadius: 16, 
+          //   boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
+          //   padding: '20px', 
+          //   display: 'flex',
+          //   justifyContent: 'flex-end',
+          //   alignItems: 'center',
+          //   height: '700px',
+          //   position: 'relative',
+          //   marginTop:'-80px'
+          // }}>
             <div style={{ 
+              flex:1,
               transform: 'scale(0.75)', 
               transformOrigin: 'top center',
               maxWidth: '100%',
+              width: '800px',  
+              height:'100%',
               overflow: 'auto',
-              marginTop: '220px',
+              marginTop: '-80px',
               maxHeight:'1000px'
             }}>
               {renderTemplate()}
             </div>
-          </div>
+          // </div>
         )}
       </div>
     </div>

@@ -111,7 +111,7 @@ const EducationTab = (props) => {
         justifyContent: 'space-between', 
         alignItems: 'center', 
         marginBottom: '20px',
-        marginLeft: isMobile ? '90px' : '0px',
+        marginLeft: isMobile ? '90px' : '10px',
       }}>
         <h1 style={{ 
           marginTop: isMobile ? '-120px' : '0px',
@@ -144,6 +144,7 @@ const EducationTab = (props) => {
           overflowY: 'auto',
           boxSizing: 'border-box',
           marginTop: isMobile ? '-45px' : '0px',
+          marginLeft: isMobile ? '0px' : '10px',
         }}>
           {!isEditingMode && (
             <button
@@ -435,30 +436,33 @@ Advanced Excel – Microsoft </div>
 
         {/* Right section - Template Preview with User Data */}
         {!isMobile && (
-          <div style={{ 
-            flex: 1, 
-            background: '#fff', 
-            borderRadius: 16, 
-            boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
-            padding: '20px', 
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            height: '700px',
-            position: 'relative',
-            marginTop:'-80px'
-          }}>
+          // <div style={{ 
+          //   flex: 1, 
+          //   background: '#fff', 
+          //   borderRadius: 16, 
+          //   boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
+          //   padding: '20px', 
+          //   display: 'flex',
+          //   justifyContent: 'flex-end',
+          //   alignItems: 'center',
+          //   height: '700px',
+          //   position: 'relative',
+          //   marginTop:'-80px'
+          // }}>
             <div style={{ 
+              flex:1,
               transform: 'scale(0.75)', 
               transformOrigin: 'top center',
               maxWidth: '100%',
+              width: '800px',  
+              height:'100%',
               overflow: 'auto',
-              marginTop: '220px',
-              maxHeight:'1000px',
+              marginTop: '-80px',
+              maxHeight:'1000px'
             }}>
               {renderTemplate()}
             </div>
-          </div>
+          // </div>
         )}
       </div>
     </div>

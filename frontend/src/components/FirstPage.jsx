@@ -64,7 +64,7 @@ const FirstPage = () => {
 
   // Calculate resume completeness
   const calculateCompleteness = () => {
-    let completedSections = 0;
+    let completedSections = 0; 
     const totalSections = 5; // heading, education, experience, skills, summary
 
     // Check heading section (20% - 4 points)
@@ -183,8 +183,8 @@ const FirstPage = () => {
           boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
         }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
           <div style={{
-            width: 24,
-            height: 2,
+            width: 16,
+            height: 1.5,
             background: 'white',
             margin: '4px 0',
             transition: '0.3s',
@@ -213,7 +213,7 @@ const FirstPage = () => {
       <div style={{
         background: '#2a003f',
         color: 'white',
-        width: isMobile ? '100%' : 200,
+        width: isMobile ? '50%' : 200,
         height: isMobile ? '100vh' : '100vh',
         position: 'fixed',
         top: 0,
@@ -237,7 +237,7 @@ const FirstPage = () => {
           textAlign: isMobile ? 'center' : 'left',
           width: '100%',
         }}>
-          AI Resume Builder<span style={{ color: '#c4b5fd', fontSize: isMobile ? 16 : 20, marginLeft: 4 }}>▶</span>
+          AI Resume Builder<span style={{ color: '#c4b5fd', fontSize: isMobile ? 16 : 20, marginLeft: 4 }}></span>
         </div>
         
         {/* Stepper */}
@@ -340,7 +340,7 @@ const FirstPage = () => {
 
       {/* Main Content */}
       <div style={{
-        marginLeft: isMobile ? 0 : ((selectedStep >= 1 && selectedStep <= 5) ? 240 : 300),
+        marginLeft: isMobile ? 0 : 240,
         minHeight: '100vh',
         maxHeight: '100vh',
         overflowY: 'auto',

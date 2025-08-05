@@ -182,6 +182,22 @@ const FinalizeTab = (props) => {
             </div>
           </div>
           */}
+          <button
+            type="button"
+            onClick={handleDownloadResume}
+            style={{
+              border: 'none',
+              background: '#6b3b7a',
+              color: 'white',
+              fontWeight: 700,
+              fontSize: isMobile ? 16 : 18,
+              borderRadius: 30,
+              padding: isMobile ? '8px 24px' : '10px 36px',
+              cursor: 'pointer',
+            }}
+          >
+            Download
+          </button>
         </div>
       </>
     );
@@ -243,7 +259,7 @@ const FinalizeTab = (props) => {
         justifyContent: 'space-between', 
         alignItems: 'center', 
         marginBottom: '20px', 
-        marginLeft: isMobile ? '60px' : '-40px'
+        marginLeft: isMobile ? '60px' : '10px'
       }}>
         <h1 style={{ 
           marginTop: isMobile ? '-120px' : '0px',
@@ -253,22 +269,6 @@ const FinalizeTab = (props) => {
         }}>
           Wrap-Up Your Resume
         </h1>
-        <button
-          type="button"
-          onClick={handleDownloadResume}
-          style={{
-            border: 'none',
-            background: '#6b3b7a',
-            color: 'white',
-            fontWeight: 700,
-            fontSize: isMobile ? 16 : 18,
-            borderRadius: 30,
-            padding: isMobile ? '8px 24px' : '10px 36px',
-            cursor: 'pointer',
-          }}
-        >
-          Download
-        </button>
       </div>
       
       {/* Main content area with flex layout */}
@@ -289,48 +289,75 @@ const FinalizeTab = (props) => {
             padding: '16px',
             height: '600px',
             width: '420px',
+            maxWidth: '420px',
             overflowY: 'auto',
-            marginLeft: '-46px',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            marginLeft: isMobile ? '0px' : '10px',
           }}>
             {renderLeftPanel()}
           </div>
         )}
 
-        {/* Right section - Template Preview with User Data */}
-        <div style={{ 
+        {/* Right section - Template Preview */}
+        {/* <div style={{ 
           flex: isMobile ? 'none' : 1, 
           background: '#fff', 
           borderRadius: 16, 
           boxShadow: '0 4px 24px rgba(10,24,51,0.08)', 
-          padding: isMobile ? '0px' : '20px', 
+          padding: isMobile ? '10px' : '20px', 
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: isMobile ? 'center' : 'flex-end',
           alignItems: 'center',
-          height: isMobile ? '700px' : '600px',
+          height: isMobile ? 'auto' : '700px',
           width: isMobile ? '100%' : 'auto',
           position: 'relative',
-          marginTop: isMobile ? '75px' : '0px',
-          boxSizing: 'border-box'
-        }}>
+          marginTop: isMobile ? '75px' : '-80px',
+          boxSizing: 'border-box',
+          overflow: 'auto'
+        }}> */}
           <div style={{ 
-            transform: isMobile 
-              ? (selectedTemplate === 1 ? 'scale(0.2)' : 'scale(0.2)') 
-              : (selectedTemplate === 1 ? 'scale(0.5)' : 'scale(0.6)'), 
+            flex:1,
+            transform: isMobile ? 'scale(1)' : 'scale(0.75)', 
             transformOrigin: 'top center',
             maxWidth: '100%',
+            width: isMobile ? '100%' : '800px',  
+            height: isMobile ? '400px' : '100%',
             overflow: 'auto',
-            marginTop: isMobile 
-              ? (selectedTemplate === 1 ? '50px' : '50px') 
-              : (selectedTemplate === 1 ? '350px' : '350px'),
-            maxheight:isMobile ? '400px' : '100%',
-            width: isMobile?'100%':'100%',
-            boxSizing: 'border-box',
-           
+            marginTop: isMobile ? '-40px' : '-80px',
+            marginBottom: isMobile ? '20px' : '0px',
+            maxHeight: isMobile ? 'auto' : '1000px'
           }}>
             {renderTemplate()}
           </div>
-        </div>
+          
+          {/* Mobile Download Button - appears at bottom of template */}
+          {isMobile && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '20px 0',
+              marginTop: '20px'
+            }}>
+              <button
+                type="button"
+                onClick={handleDownloadResume}
+                style={{
+                  border: 'none',
+                  background: '#6b3b7a',
+                  color: 'white',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  borderRadius: 30,
+                  padding: '12px 32px',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(107, 59, 122, 0.3)'
+                }}
+              >
+                📥 Download Resume
+              </button>
+            </div>
+          )}
+        {/* </div> */}
       </div>
     </div>
   );

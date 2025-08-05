@@ -31,7 +31,6 @@ const TemplateTab = ({ onUseTemplate }) => {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check if screen is mobile size
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -53,7 +52,8 @@ const TemplateTab = ({ onUseTemplate }) => {
       <div style={{ 
         maxWidth: 1100, 
         margin: '0 auto', 
-        padding: isMobile ? '0 16px' : '0 24px' 
+        padding: isMobile ? '0 16px' : '0 24px',
+        marginTop: isMobile ? '-75px' : '0px', 
       }}>
         <h1 style={{ 
           fontSize: isMobile ? 24 : 32, 
@@ -74,6 +74,7 @@ const TemplateTab = ({ onUseTemplate }) => {
         }}>
           You can always change your template later.
         </div>
+
         <div style={{ 
           display: 'flex', 
           flexDirection: isMobile ? 'column' : 'row',
@@ -91,9 +92,9 @@ const TemplateTab = ({ onUseTemplate }) => {
                 border: selectedIdx === idx ? '3px solid #2563eb' : '3px solid #e5e7eb',
                 borderRadius: 8,
                 boxShadow: '0 2px 12px rgba(10,24,51,0.08)',
-                width: isMobile ? '100%' : 380,
+                width: isMobile ? '100%' : 480,
                 maxWidth: isMobile ? 400 : 380,
-                minHeight: isMobile ? 320 : 480,
+                height: isMobile ? 360 : 400,  
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
@@ -104,13 +105,12 @@ const TemplateTab = ({ onUseTemplate }) => {
                 transition: 'border 0.2s',
               }}
             >
-              {/* Template preview placeholder or actual template */}
               <div style={{
-                width: '100%',
-                height: isMobile ? 280 : 430,
+                width: isMobile ? '100%' : 330,
+                height: isMobile ? 280 : 395,
                 background: tpl.bg,
-                borderTopLeftRadius: 8,
-                borderTopRightRadius: 8,
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -129,18 +129,17 @@ const TemplateTab = ({ onUseTemplate }) => {
                     justifyContent: 'center',
                     overflow: 'hidden',
                   }}>
-                    <div style={{
-                      marginTop: isMobile ? '625px' : '470px',
-                      marginLeft: isMobile ? '255px' : '160px',
-                      transform: isMobile ? 'scale(0.35)' : 'scale(0.48)',
-                      transformOrigin: 'top left',
-                      width: 500,
-                      height: 900,
-                      pointerEvents: 'none',
-                      boxSizing: 'border-box',
-                    }}>
-                      <Template1 />
-                    </div>
+                    <img 
+                      src="/template1.png" 
+                      alt="Template 1 Preview"
+                      style={{
+                        paddingTop: '0px',
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '0px 0px 0 0',
+                      }}
+                    />
                   </div>
                 ) : idx === 1 ? (
                   <div style={{
@@ -168,71 +167,78 @@ const TemplateTab = ({ onUseTemplate }) => {
                   <span role="img" aria-label="resume">📄</span>
                 )}
               </div>
-              {/* RECOMMENDED label */}
-              {tpl.recommended && (
-                <div style={{
-                  position: 'absolute',
-                  bottom: 5,
-                  left: 0,
-                  right: 0,
-                  margin: '0 auto',
-                  width: '90%',
-                  background: '#fbbf24',
-                  color: '#7c3aed',
-                  fontWeight: 700,
-                  fontSize: isMobile ? 12 : 15,
-                  borderRadius: 6,
-                  textAlign: 'center',
-                  padding: isMobile ? '3px 0' : '4px 0',
-                  letterSpacing: 1,
-                  boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                }}>
-                  RECOMMENDED
-                </div>
+
+              {/* Mobile button */}
+              {isMobile && selectedIdx === idx && (
+                <button
+                  onClick={() => onUseTemplate && onUseTemplate(idx)}
+                  style={{
+                    position: 'absolute',
+                    bottom: 10,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: '#6b3b7a',
+                    color: 'white',
+                    border: 'none',
+                    fontWeight: 700,
+                    fontSize: 14,
+                    borderRadius: 20,
+                    padding: '8px 20px',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                    zIndex: 1,
+                  }}
+                >
+                  Use this template
+                </button>
               )}
+
+              {/* RECOMMENDED label */}
+              
             </div>
           ))}
         </div>
-        {/* Action buttons */}
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: isMobile ? 'column' : 'row',
-          justifyContent: 'center', 
-          gap: isMobile ? 16 : 32, 
-          marginBottom: 32,
-          alignItems: 'center',
-        }}>
-          <button style={{
-            background: 'none',
-            color: '#7c3aed',
-            border: 'none',
-            fontWeight: 700,
-            fontSize: isMobile ? 16 : 18,
-            textDecoration: 'underline',
-            cursor: 'pointer',
-            padding: isMobile ? '8px 16px' : '10px 24px',
-            width: isMobile ? 'auto' : 'auto',
-            minWidth: isMobile ? 200 : 'auto',
-          }}>Choose later</button>
-          <button
-            style={{
-              background: '#6b3b7a',
-              color: 'white',
+
+        {/* Desktop Action buttons */}
+        {!isMobile && (
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'row',
+            justifyContent: 'center', 
+            gap: 32, 
+            marginBottom: 32,
+            alignItems: 'center',
+          }}>
+            <button style={{
+              background: 'none',
+              color: '#7c3aed',
               border: 'none',
               fontWeight: 700,
-              fontSize: isMobile ? 16 : 18,
-              borderRadius: 24,
-              padding: isMobile ? '12px 32px' : '10px 32px',
+              fontSize: 18,
+              textDecoration: 'underline',
               cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-              width: isMobile ? 'auto' : 'auto',
-              minWidth: isMobile ? 200 : 'auto',
-            }}
-            onClick={() => onUseTemplate && onUseTemplate(selectedIdx)}
-          >
-            Use this template
-          </button>
-        </div>
+              padding: '10px 24px',
+            }}>
+              Choose later
+            </button>
+            <button
+              style={{
+                background: '#6b3b7a',
+                color: 'white',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: 18,
+                borderRadius: 24,
+                padding: '10px 32px',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+              }}
+              onClick={() => onUseTemplate && onUseTemplate(selectedIdx)}
+            >
+              Use this template
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
