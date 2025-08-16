@@ -460,7 +460,7 @@ const FirstPage = ({ onLogout }) => {
                 <div style={{
                   position: 'fixed',
                   top: '40px', // Position at top with 40px margin
-                  left: '55%', // Center horizontally
+                  left: isMobile?'50%':'55%', // Center horizontally
                   transform: 'translateX(-50%)', // Center the popup
                   background: 'white',
                   border: '2px solid #c4b5fd',
@@ -468,8 +468,8 @@ const FirstPage = ({ onLogout }) => {
                   padding: '24px',
                   boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
                   zIndex: 1000,
-                  width: isMobile ? 'calc(100% - 40px)' : '280px',
-                  minHeight: '200px',
+                  width: isMobile ? 'calc(100% - 90px)' : '280px',
+                  minHeight: '190px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
