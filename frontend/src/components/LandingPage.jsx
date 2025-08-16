@@ -4,6 +4,7 @@ import { FaIndianRupeeSign } from "react-icons/fa6";
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const navigate = useNavigate()
 
   const toggleMenu = () => {
@@ -11,7 +12,36 @@ const LandingPage = () => {
   }
 
   const handleStartBuilding = () => {
-    navigate('/firstpage')
+    // Check if user is authenticated
+    const usertoken = localStorage.getItem('usertoken');
+    const userData = localStorage.getItem('userData');
+    
+    if (usertoken && userData) {
+      try {
+        const parsedUserData = JSON.parse(userData);
+        if (parsedUserData.role === 'user') {
+          // User is authenticated, go to first page
+          navigate('/auth/firstpage');
+        } else {
+          // Invalid role, redirect to login
+          navigate('/auth');
+        }
+      } catch (error) {
+        // Error parsing user data, redirect to login
+        navigate('/auth');
+      }
+    } else {
+      // User not authenticated, redirect to login
+      navigate('/auth');
+    }
+  }
+
+  const handleReachOut = () => {
+    setIsContactModalOpen(true);
+  }
+
+  const closeContactModal = () => {
+    setIsContactModalOpen(false);
   }
 
   return (
@@ -44,7 +74,9 @@ const LandingPage = () => {
 
             {/* CTA Buttons */}
             <div className="hidden md:block">
-              <button className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md text-sm font-medium mr-3">
+              <button 
+                onClick={()=>navigate('/auth')}
+                className="bg-violet-600 cursor-pointer hover:bg-violet-700 text-white px-4 py-2 rounded-md text-sm font-medium mr-3">
                 Sign In
               </button>
               <button 
@@ -79,15 +111,15 @@ const LandingPage = () => {
               <a href="#pricing" className="text-gray-700 hover:text-violet-600 block px-3 py-2 rounded-md text-base font-medium">Pricing</a>
               <a href="#contact" className="text-gray-700 hover:text-violet-600 block px-3 py-2 rounded-md text-base font-medium">Contact</a>
               <div className="pt-4 pb-3 border-t border-gray-200">
-                                  <button className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full mb-2">
-                    Sign In
-                  </button>
-                  <button 
-                    onClick={handleStartBuilding}
-                    className="bg-white hover:bg-gray-50 text-violet-600 border border-violet-600 px-4 py-2 rounded-md text-sm font-medium w-full"
-                  >
-                    Get Started
-                  </button>
+                <button className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full mb-2">
+                  Sign In
+                </button>
+                <button 
+                  onClick={handleStartBuilding}
+                  className="bg-white hover:bg-gray-50 text-violet-600 border border-violet-600 px-4 py-2 rounded-md text-sm font-medium w-full"
+                >
+                  Get Started
+                </button>
               </div>
             </div>
           </div>
@@ -110,10 +142,13 @@ const LandingPage = () => {
                 onClick={handleStartBuilding}
                 className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transform hover:scale-105 transition duration-200"
               >
-                Start Building Now
+                Build Now
               </button>
-              <button className="bg-white hover:bg-gray-50 text-violet-600 border-2 border-violet-600 px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transform hover:scale-105 transition duration-200">
-                Watch Demo
+              <button 
+                onClick={handleReachOut}
+                className="bg-white hover:bg-gray-50 text-violet-600 border-2 border-violet-600 px-8 py-4 rounded-lg text-lg font-semibold transform hover:scale-105 transition duration-200"
+              >
+                Reach Out 
               </button>
             </div>
           </div>
@@ -204,15 +239,15 @@ const LandingPage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Personalized Content</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Beautiful Templates</h3>
               <p className="text-gray-600">
-                AI suggests personalized content based on your experience and target industry.
+                Choose from a variety of professionally designed templates that make you stand out.
               </p>
             </div>
 
             {/* Feature 5 */}
-            <div className="bg-gradient-to-br from-red-50 to-pink-50 p-8 rounded-xl shadow-lg">
-              <div className="bg-red-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-8 rounded-xl shadow-lg">
+              <div className="bg-blue-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
@@ -224,15 +259,15 @@ const LandingPage = () => {
             </div>
 
             {/* Feature 6 */}
-            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-xl shadow-lg">
-              <div className="bg-teal-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+            <div className="bg-gradient-to-br from-red-50 to-pink-50 p-8 rounded-xl shadow-lg">
+              <div className="bg-red-600 w-12 h-12 rounded-lg flex items-center justify-center mb-6">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17v4a2 2 0 002 2h4M7 7h4m4 0h4" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Multiple Formats</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">24/7 Support</h3>
               <p className="text-gray-600">
-                Export your resume in PDF, Word, or plain text formats for any application.
+                Get help whenever you need it with our round-the-clock customer support.
               </p>
             </div>
           </div>
@@ -257,9 +292,9 @@ const LandingPage = () => {
               <div className="bg-violet-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-white text-2xl font-bold">1</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Select Your Template</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Choose Template</h3>
               <p className="text-gray-600">
-              Choose a template to customize your resume layout. Select a template that suits your industry and role — IT, design, management & more.
+                Select from our collection of professional templates designed for different industries.
               </p>
             </div>
 
@@ -268,9 +303,9 @@ const LandingPage = () => {
               <div className="bg-violet-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-white text-2xl font-bold">2</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Input Your Information</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Fill Information</h3>
               <p className="text-gray-600">
-              Enter your work experience, education, and skills. Our AI will help you describe your achievements effectively.
+                Input your details, experience, and skills. Our AI will help optimize your content.
               </p>
             </div>
 
@@ -281,113 +316,22 @@ const LandingPage = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Download & Apply</h3>
               <p className="text-gray-600">
-                Download your professional resume in multiple formats and start applying to your dream job.
+                Download your professional resume in multiple formats and start applying to jobs.
               </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              What Our Users Say
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Join thousands of professionals who have landed their dream jobs
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Testimonial 1 */}
-            <div className="bg-gray-50 p-8 rounded-xl">
-              <div className="flex items-center mb-4">
-                <div className="text-yellow-400 flex">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-600 mb-6">
-                "The AI suggestions were spot-on! I got 3 interviews in the first week after using this resume builder."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-violet-600 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white font-bold">S</span>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Abhishek sharma</h4>
-                  <p className="text-gray-600 text-sm">Software Engineer</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Testimonial 2 */}
-            <div className="bg-gray-50 p-8 rounded-xl">
-              <div className="flex items-center mb-4">
-                <div className="text-yellow-400 flex">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-600 mb-6">
-                "Finally got my dream job! The ATS optimization feature made all the difference in getting past the initial screening."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white font-bold">M</span>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Kajal Gole</h4>
-                  <p className="text-gray-600 text-sm">Marketing Manager</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Testimonial 3 */}
-            <div className="bg-gray-50 p-8 rounded-xl">
-              <div className="flex items-center mb-4">
-                <div className="text-yellow-400 flex">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-600 mb-6">
-                "The templates are beautiful and professional. I love how easy it is to customize everything."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white font-bold">E</span>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Ramesh Rawat</h4>
-                  <p className="text-gray-600 text-sm">UX Designer</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-gray-50">
+      <section id="pricing" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Choose Your Plan
+              Simple, Transparent Pricing
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Start free and upgrade when you need more features
+              Choose the plan that best fits your needs
             </p>
           </div>
 
@@ -422,7 +366,10 @@ const LandingPage = () => {
                   PDF Export
                 </li>
               </ul>
-              <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200">
+              <button 
+                onClick={handleStartBuilding}
+                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200"
+              >
                 Get Started Free
               </button>
             </div>
@@ -533,7 +480,7 @@ const LandingPage = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Ready to Build Your Professional Resume?
           </h2>
-                      <p className="text-xl text-violet-100 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-violet-100 mb-8 max-w-3xl mx-auto">
             Join thousands of professionals who have landed their dream jobs with our AI-powered resume builder.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -609,6 +556,48 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
+
+      {/* Contact Modal */}
+      {isContactModalOpen && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 shadow-2xl">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Contact Aisaathi</h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-center space-x-3">
+                  <svg className="w-6 h-6 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  <span className="text-lg font-semibold text-gray-800">+91 95552 22841</span>
+                </div>
+                
+                <div className="bg-violet-50 p-4 rounded-lg">
+                  <p className="text-gray-700 text-center">
+                    <span className="font-semibold">Hello Aisaathi,</span><br />
+                    I need a little help in building my resume
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mt-8 flex space-x-3">
+                <button
+                  onClick={() => window.open('tel:+919555222841', '_self')}
+                  className="flex-1 bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-200"
+                >
+                  Call Now
+                </button>
+                <button
+                  onClick={closeContactModal}
+                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-lg font-semibold transition duration-200"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

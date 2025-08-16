@@ -132,7 +132,7 @@ const ExperienceTab = (props) => {
         marginLeft: isMobile ? '90px' : '10px',
       }}>
         <h1 style={{ 
-          marginTop: isMobile ? '-120px' : '0px',
+          marginTop: isMobile ? '-120px' : '-10px',
           fontSize: isMobile ? 25 : 32, 
           fontWeight: 700, 
           margin: 0 
@@ -156,12 +156,12 @@ const ExperienceTab = (props) => {
           background: '#f8f9fa', 
           borderRadius: 16, 
           padding: isMobile ? '12px' : '16px',
-          height: isMobile ? '620px' : '600px',
+          height: isMobile ? '620px' : '645px',
           width: isMobile ? '100%' : '420px',
           maxWidth: isMobile ? '100%' : '420px',
           overflowY: 'auto',
           boxSizing: 'border-box',
-          marginTop: isMobile ? '-45px' : '0px',
+          marginTop: isMobile ? '-45px' : '-10px',
           marginLeft: isMobile ? '0px' : '10px',
         }}>
           {!isEditingMode && (
@@ -191,7 +191,7 @@ const ExperienceTab = (props) => {
               fontWeight: 600, 
               color: '#1e293b', 
               marginBottom: 8, 
-              margin: '0 0 8px 0' 
+              margin: '0 0 4px 0' 
             }}>
               Add your professional experience and achievements
             </h3>
@@ -411,7 +411,7 @@ const ExperienceTab = (props) => {
             </div>
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16, marginTop: 32 }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16, marginTop: 0 }}>
             {isEditingMode ? (
               <button
                 type="button"

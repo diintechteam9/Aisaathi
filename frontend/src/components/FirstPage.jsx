@@ -25,11 +25,13 @@ const templateComponents = [
   <div key={2} style={{width:'100%',height:'100%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:60}}><span role="img" aria-label="resume">📄</span></div>,
 ];
 
-const FirstPage = () => {
+const FirstPage = ({ onLogout }) => {
   const [selectedStep, setSelectedStep] = useState(0);
   const [selectedTemplateIdx, setSelectedTemplateIdx] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -42,6 +44,23 @@ const FirstPage = () => {
     
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Close settings dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isSettingsOpen && !event.target.closest('.settings-container')) {
+        setIsSettingsOpen(false);
+      }
+      if (isProfileOpen && !event.target.closest('.profile-container')) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSettingsOpen, isProfileOpen]);
 
   // Centralized state for all form data
   const [formData, setFormData] = useState({
@@ -100,70 +119,89 @@ const FirstPage = () => {
 
   const completeness = calculateCompleteness();
 
-  const handleTemplateSelect = (idx) => {
-    setSelectedTemplateIdx(idx);
-    setSelectedStep(1); // Go to Heading tab
-    if (isMobile) setIsMobileMenuOpen(false);
+  const handleStepClick = (stepIndex) => {
+    setSelectedStep(stepIndex);
+  };
+
+  const handleTemplateSelect = (templateIndex) => {
+    setSelectedTemplateIdx(templateIndex);
+    setSelectedStep(1);
   };
 
   const handleNextEducation = () => {
     setSelectedStep(2);
-    if (isMobile) setIsMobileMenuOpen(false);
   };
 
   const handleNextExperience = () => {
     setSelectedStep(3);
-    if (isMobile) setIsMobileMenuOpen(false);
   };
 
   const handleNextSkills = () => {
     setSelectedStep(4);
-    if (isMobile) setIsMobileMenuOpen(false);
   };
 
   const handleNextSummary = () => {
     setSelectedStep(5);
-    if (isMobile) setIsMobileMenuOpen(false);
   };
 
   const handleNextFinalize = () => {
     setSelectedStep(6);
-    if (isMobile) setIsMobileMenuOpen(false);
   };
 
-  const handleGoBack = (step) => {
-    setSelectedStep(step);
-    if (isMobile) setIsMobileMenuOpen(false);
+  const handleGoBack = (stepIndex) => {
+    setSelectedStep(stepIndex);
   };
 
-  const handleStepClick = (idx) => {
-    setSelectedStep(idx);
-    if (isMobile) setIsMobileMenuOpen(false);
+  const updateHeading = (newHeading) => {
+    setFormData(prev => ({
+      ...prev,
+      heading: newHeading
+    }));
   };
 
-  // Update specific sections of form data
-  const updateHeading = (headingData) => {
-    setFormData(prev => ({ ...prev, heading: { ...prev.heading, ...headingData } }));
+  const updateEducation = (newEducation) => {
+    setFormData(prev => ({
+      ...prev,
+      education: newEducation
+    }));
   };
 
-  const updateEducation = (educationData) => {
-    setFormData(prev => ({ ...prev, education: educationData }));
+  const updateExperience = (newExperience) => {
+    setFormData(prev => ({
+      ...prev,
+      experience: newExperience
+    }));
   };
 
-  const updateExperience = (experienceData) => {
-    setFormData(prev => ({ ...prev, experience: experienceData }));
+  const updateSkills = (newSkills) => {
+    setFormData(prev => ({
+      ...prev,
+      skills: newSkills
+    }));
   };
 
-  const updateSkills = (skillsData) => {
-    setFormData(prev => ({ ...prev, skills: skillsData }));
+  const updateSummary = (newSummary) => {
+    setFormData(prev => ({
+      ...prev,
+      summary: newSummary
+    }));
   };
 
-  const updateSummary = (summaryData) => {
-    setFormData(prev => ({ ...prev, summary: summaryData }));
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(!isSettingsOpen);
   };
 
-  const updateContact = (contactData) => {
-    setFormData(prev => ({ ...prev, heading: { ...prev.heading, ...contactData } }));
+  const handleProfileClick = () => {
+    setIsProfileOpen(!isProfileOpen);
+  };
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      // Fallback: redirect to landing page
+      window.location.href = '/';
+    }
   };
 
   return (
@@ -231,17 +269,17 @@ const FirstPage = () => {
         {/* Logo */}
         <div style={{ 
           fontWeight: 700, 
-          fontSize: isMobile ? 20 : 24, 
-          marginBottom: 32, 
+          fontSize: isMobile ? 16 : 18, 
+          marginBottom: 20, 
           letterSpacing: 1,
           textAlign: isMobile ? 'center' : 'left',
           width: '100%',
         }}>
-          AI Resume Builder<span style={{ color: '#c4b5fd', fontSize: isMobile ? 16 : 20, marginLeft: 4 }}></span>
+          Build Resume<span style={{ color: '#c4b5fd', fontSize: isMobile ? 14 : 13, marginLeft: 4 }}></span>
         </div>
         
         {/* Stepper */}
-        <div style={{ marginBottom: 40, width: '100%' }}>
+        <div style={{ marginBottom: 30, width: '100%' }}>
           {steps.map((step, idx) => (
             <div
               key={step.number}
@@ -249,16 +287,16 @@ const FirstPage = () => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                marginBottom: idx < steps.length - 1 ? 16 : 0,
+                marginBottom: idx < steps.length - 1 ? 12 : 0,
                 cursor: 'pointer',
                 opacity: selectedStep === idx ? 1 : 0.85,
-                padding: isMobile ? '8px 0' : '0',
+                padding: isMobile ? '6px 0' : '0',
               }}
             >
               {/* Step circle or check */}
               <div style={{
-                width: isMobile ? 28 : 32,
-                height: isMobile ? 28 : 32,
+                width: isMobile ? 24 : 28,
+                height: isMobile ? 24 : 28,
                 borderRadius: '50%',
                 background: selectedStep === idx ? 'white' : 'transparent',
                 border: '2px solid white',
@@ -267,7 +305,7 @@ const FirstPage = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 700,
-                fontSize: isMobile ? 12 : 14,
+                fontSize: isMobile ? 10 : 12,
                 position: 'relative',
                 zIndex: 1,
                 transition: 'background 0.2s, color 0.2s',
@@ -277,10 +315,10 @@ const FirstPage = () => {
               </div>
               {/* Step label */}
               <span style={{
-                marginLeft: 12,
+                marginLeft: 10,
                 fontWeight: selectedStep === idx ? 700 : 500,
                 color: selectedStep === idx ? 'white' : '#ede9fe',
-                fontSize: isMobile ? 12 : 14,
+                fontSize: isMobile ? 10 : 12,
                 textShadow: selectedStep === idx ? '0 0 8px #fff' : 'none',
                 transition: 'color 0.2s',
                 wordBreak: 'break-word',
@@ -292,32 +330,361 @@ const FirstPage = () => {
         {/* Progress bar */}
         <div style={{ marginTop: 'auto', width: '100%' }}>
           <div style={{ 
-            fontSize: isMobile ? 16 : 20, 
+            fontSize: isMobile ? 12 : 14, 
             fontWeight: 700, 
             color: '#c4b5fd', 
-            marginBottom: 8,
+            marginBottom: 6,
             textAlign: isMobile ? 'center' : 'left',
           }}>
             Status:
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isMobile ? 'center' : 'flex-start' }}>
             <div style={{
-              background: '#a78bfa',
-              borderRadius: 8,
-              width: isMobile ? '60%' : '80%',
-              height: 12,
-              marginRight: 8,
+            width: '100%', 
+            height: 6, 
+            background: 'rgba(255,255,255,0.2)', 
+            borderRadius: 3,
               overflow: 'hidden',
             }}>
               <div style={{
+              width: `${calculateCompleteness()}%`, 
+              height: '100%', 
                 background: '#c4b5fd',
-                width: `${completeness}%`,
-                height: '100%',
-                borderRadius: 8,
-                transition: 'width 0.3s',
+              borderRadius: 3,
+              transition: 'width 0.3s ease',
               }} />
             </div>
-            <span style={{ fontWeight: 700, fontSize: isMobile ? 13 : 15 }}>{completeness}%</span>
+          <div style={{ 
+            fontSize: isMobile ? 11 : 13, 
+            color: '#ede9fe', 
+            marginTop: 6,
+            textAlign: isMobile ? 'center' : 'left',
+          }}>
+            {calculateCompleteness()}% Complete
+          </div>
+        </div>
+
+        {/* Bottom Action Buttons */}
+        <div style={{ 
+          marginTop: 16, 
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+        }}>
+          {/* Help Button */}
+          <button
+            style={{
+              background: 'transparent',
+              border: '1px solid #c4b5fd',
+              color: '#c4b5fd',
+              padding: '8px 12px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: isMobile ? 10 : 11,
+              fontWeight: 500,
+              transition: 'all 0.2s',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 6,
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = '#c4b5fd';
+              e.target.style.color = '#2a003f';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'transparent';
+              e.target.style.color = '#c4b5fd';
+            }}
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Help
+          </button>
+
+          {/* Profile Button */}
+          <div className="profile-container" style={{ position: 'relative' }}>
+            <button
+              style={{
+                background: 'transparent',
+                border: '1px solid #c4b5fd',
+                color: '#c4b5fd',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: isMobile ? 10 : 11,
+                fontWeight: 500,
+                transition: 'all 0.2s',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#c4b5fd';
+                e.target.style.color = '#2a003f';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'transparent';
+                e.target.style.color = '#c4b5fd';
+              }}
+              onClick={handleProfileClick}
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Profile
+            </button>
+
+            {/* Profile Popup */}
+            {isProfileOpen && (
+              <>
+                {/* Backdrop Overlay */}
+                <div 
+                  style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    zIndex: 999,
+                  }}
+                  onClick={() => setIsProfileOpen(false)}
+                />
+                
+                {/* Profile Popup */}
+                <div style={{
+                  position: 'fixed',
+                  top: '40px', // Position at top with 40px margin
+                  left: '55%', // Center horizontally
+                  transform: 'translateX(-50%)', // Center the popup
+                  background: 'white',
+                  border: '2px solid #c4b5fd',
+                  borderRadius: '12px',
+                  padding: '24px',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+                  zIndex: 1000,
+                  width: isMobile ? 'calc(100% - 40px)' : '280px',
+                  minHeight: '200px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setIsProfileOpen(false)}
+                    style={{
+                      position: 'absolute',
+                      top: '12px',
+                      right: '12px',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '4px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = '#f3f4f6';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                    }}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+
+                  {/* Profile Content */}
+                  <div style={{ textAlign: 'center', width: '100%' }}>
+                    {/* Avatar */}
+                    <div style={{
+                      width: isMobile ? '60px' : '80px',
+                      height: isMobile ? '60px' : '80px',
+                      background: 'linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 100%)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 20px',
+                      fontSize: isMobile ? '24px' : '32px',
+                      fontWeight: 'bold',
+                      color: 'white',
+                      boxShadow: '0 4px 16px rgba(196, 181, 253, 0.3)',
+                    }}>
+                      {(() => {
+                        const userData = localStorage.getItem('userData');
+                        if (userData) {
+                          try {
+                            const parsed = JSON.parse(userData);
+                            return parsed.name ? parsed.name.charAt(0).toUpperCase() : 'U';
+                          } catch (e) {
+                            return 'U';
+                          }
+                        }
+                        return 'U';
+                      })()}
+                    </div>
+                    
+                    {/* User Name */}
+                    <div style={{
+                      fontSize: isMobile ? '18px' : '20px',
+                      fontWeight: '700',
+                      color: '#1f2937',
+                      marginBottom: '8px',
+                      lineHeight: '1.2',
+                    }}>
+                      {(() => {
+                        const userData = localStorage.getItem('userData');
+                        if (userData) {
+                          try {
+                            const parsed = JSON.parse(userData);
+                            return parsed.name || 'User Name';
+                          } catch (e) {
+                            return 'User Name';
+                          }
+                        }
+                        return 'User Name';
+                      })()}
+                    </div>
+                    
+                    {/* Email */}
+                    <div style={{
+                      fontSize: isMobile ? '12px' : '14px',
+                      color: '#6b7280',
+                      marginBottom: '20px',
+                      lineHeight: '1.4',
+                    }}>
+                      {(() => {
+                        const userData = localStorage.getItem('userData');
+                        if (userData) {
+                          try {
+                            const parsed = JSON.parse(userData);
+                            return parsed.email || 'user@email.com';
+                          } catch (e) {
+                            return 'user@email.com';
+                          }
+                        }
+                        return 'user@email.com';
+                      })()}
+                    </div>
+
+                    {/* Profile Status */}
+                    <div style={{
+                      background: '#f0f9ff',
+                      border: '1px solid #0ea5e9',
+                      borderRadius: '20px',
+                      padding: '8px 16px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      color: '#0369a1',
+                      display: 'inline-block',
+                    }}>
+                      Active User
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Settings Button with Dropdown */}
+          <div className="settings-container" style={{ position: 'relative' }}>
+            <button
+              style={{
+                background: 'transparent',
+                border: '1px solid #c4b5fd',
+                color: '#c4b5fd',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: isMobile ? 10 : 11,
+                fontWeight: 500,
+                transition: 'all 0.2s',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#c4b5fd';
+                e.target.style.color = '#2a003f';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'transparent';
+                e.target.style.color = '#c4b5fd';
+              }}
+              onClick={handleSettingsClick}
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.996.797 2.41.067 3.14A2.89 2.89 0 0016 18.25a2.89 2.89 0 002.92-2.69c.007-.07.007-.14.007-.21 0-.07-.007-.14-.007-.21A2.89 2.89 0 0016 13.5a2.89 2.89 0 00-2.92-2.69c-.007-.07-.007-.14-.007-.21 0-.07.007-.14.007-.21A2.89 2.89 0 0016 8.75a2.89 2.89 0 00-2.92-2.69c-.007-.07-.007-.14-.007-.21 0-.07.007-.14.007-.21A2.89 2.89 0 0016 4z" />
+              </svg>
+              Settings
+            </button>
+
+            {/* Settings Dropdown - Integrated Sub-button Style */}
+            {isSettingsOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: '0',
+                right: '0',
+                background: 'transparent',
+                border: 'none',
+                padding: '0',
+                marginTop: '2px',
+                zIndex: 100,
+                width: '100%',
+              }}>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    background: 'rgba(196, 181, 253, 0.1)',
+                    border: '1px solid #c4b5fd',
+                    borderTop: 'none',
+                    borderTopLeftRadius: '0',
+                    borderTopRightRadius: '0',
+                    borderBottomLeftRadius: '6px',
+                    borderBottomRightRadius: '6px',
+                    color: '#c4b5fd',
+                    padding: '6px 12px',
+                    cursor: 'pointer',
+                    fontSize: isMobile ? 9 : 10,
+                    fontWeight: 500,
+                    textAlign: 'center',
+                    width: '100%',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 5,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(196, 181, 253, 0.2)';
+                    e.target.style.color = '#e9d5ff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(196, 181, 253, 0.1)';
+                    e.target.style.color = '#c4b5fd';
+                  }}
+                >
+                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
