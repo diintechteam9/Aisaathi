@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { API_BASE_URL } from '../config'
 import HeadingTab from './HeadingTab'
 import TemplateTab from './TemplateTab';
 import Template1 from './Templates/Template1';
@@ -32,6 +34,9 @@ const FirstPage = ({ onLogout }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [profileDetails, setProfileDetails] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(false);
+  const [profileError, setProfileError] = useState(null);
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -192,7 +197,36 @@ const FirstPage = ({ onLogout }) => {
   };
 
   const handleProfileClick = () => {
-    setIsProfileOpen(!isProfileOpen);
+    const next = !isProfileOpen;
+    setIsProfileOpen(next);
+    if (next) {
+      (async () => {
+        try {
+          setLoadingProfile(true);
+          setProfileError(null);
+          const token = localStorage.getItem('usertoken');
+          const raw = localStorage.getItem('userData');
+          const parsed = raw ? JSON.parse(raw) : {};
+          const clientId = parsed.clientId;
+          if (!token || !clientId) {
+            throw new Error('Missing user token or clientId');
+          }
+          const resp = await axios.get(`${API_BASE_URL}/clients/${clientId}/user/userprofile`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!resp.data?.success) {
+            throw new Error(resp.data?.message || 'Failed to load profile');
+          }
+          setProfileDetails(resp.data.user || null);
+        } catch (e) {
+          console.error('Load profile error:', e);
+          setProfileError(e.message);
+          setProfileDetails(null);
+        } finally {
+          setLoadingProfile(false);
+        }
+      })();
+    }
   };
 
   const handleLogout = () => {
@@ -456,24 +490,22 @@ const FirstPage = ({ onLogout }) => {
                   onClick={() => setIsProfileOpen(false)}
                 />
                 
-                {/* Profile Popup */}
+                {/* Profile Popup Card (top-left) */}
                 <div style={{
                   position: 'fixed',
-                  top: '40px', // Position at top with 40px margin
-                  left: isMobile?'50%':'55%', // Center horizontally
-                  transform: 'translateX(-50%)', // Center the popup
+                  top: '24px',
+                  left: '700px',
                   background: 'white',
-                  border: '2px solid #c4b5fd',
-                  borderRadius: '12px',
-                  padding: '24px',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '16px',
+                  padding: '20px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.08)',
                   zIndex: 1000,
-                  width: isMobile ? 'calc(100% - 90px)' : '280px',
-                  minHeight: '190px',
+                  width: isMobile ? 'calc(100% - 80px)' : '360px',
+                  minHeight: '200px',
                   display: 'flex',
                   flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  gap: '14px',
                 }}>
                   {/* Close Button */}
                   <button
@@ -505,91 +537,51 @@ const FirstPage = ({ onLogout }) => {
                   </button>
 
                   {/* Profile Content */}
-                  <div style={{ textAlign: 'center', width: '100%' }}>
-                    {/* Avatar */}
-                    <div style={{
-                      width: isMobile ? '60px' : '80px',
-                      height: isMobile ? '60px' : '80px',
-                      background: 'linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 100%)',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: '0 auto 20px',
-                      fontSize: isMobile ? '24px' : '32px',
-                      fontWeight: 'bold',
-                      color: 'white',
-                      boxShadow: '0 4px 16px rgba(196, 181, 253, 0.3)',
-                    }}>
-                      {(() => {
-                        const userData = localStorage.getItem('userData');
-                        if (userData) {
-                          try {
-                            const parsed = JSON.parse(userData);
-                            return parsed.name ? parsed.name.charAt(0).toUpperCase() : 'U';
-                          } catch (e) {
-                            return 'U';
-                          }
-                        }
-                        return 'U';
-                      })()}
-                    </div>
-                    
-                    {/* User Name */}
-                    <div style={{
-                      fontSize: isMobile ? '18px' : '20px',
-                      fontWeight: '700',
-                      color: '#1f2937',
-                      marginBottom: '8px',
-                      lineHeight: '1.2',
-                    }}>
-                      {(() => {
-                        const userData = localStorage.getItem('userData');
-                        if (userData) {
-                          try {
-                            const parsed = JSON.parse(userData);
-                            return parsed.name || 'User Name';
-                          } catch (e) {
-                            return 'User Name';
-                          }
-                        }
-                        return 'User Name';
-                      })()}
-                    </div>
-                    
-                    {/* Email */}
-                    <div style={{
-                      fontSize: isMobile ? '12px' : '14px',
-                      color: '#6b7280',
-                      marginBottom: '20px',
-                      lineHeight: '1.4',
-                    }}>
-                      {(() => {
-                        const userData = localStorage.getItem('userData');
-                        if (userData) {
-                          try {
-                            const parsed = JSON.parse(userData);
-                            return parsed.email || 'user@email.com';
-                          } catch (e) {
-                            return 'user@email.com';
-                          }
-                        }
-                        return 'user@email.com';
-                      })()}
+                  <div style={{ width: '100%' }}>
+                    {/* Header */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{
+                        width: '56px', height: '56px', borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 100%)',
+                        color: 'white', fontWeight: 700, fontSize: 20,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 4px 12px rgba(139,92,246,0.35)'
+                      }}>
+                        {(() => {
+                          const base = profileDetails || {};
+                          const local = (() => { try { return JSON.parse(localStorage.getItem('userData')||'{}'); } catch{ return {}; }})();
+                          const nm = base.name || local.name || 'U';
+                          return nm.charAt(0).toUpperCase();
+                        })()}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>
+                          {(profileDetails?.name) || (()=>{ try { return JSON.parse(localStorage.getItem('userData')||'{}').name } catch{ return 'User'; }})() || 'User'}
+                        </div>
+                        <div style={{ fontSize: 13, color: '#6b7280' }}>
+                          {(profileDetails?.email) || (()=>{ try { return JSON.parse(localStorage.getItem('userData')||'{}').email } catch{ return ''; }})()}
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Profile Status */}
-                    <div style={{
-                      background: '#f0f9ff',
-                      border: '1px solid #0ea5e9',
-                      borderRadius: '20px',
-                      padding: '8px 16px',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      color: '#0369a1',
-                      display: 'inline-block',
-                    }}>
-                      Active User
+                    {/* Body */}
+                    <div style={{ marginTop: 12 }}>
+                      {loadingProfile ? (
+                        <div style={{ fontSize: 13, color: '#6b7280' }}>Loading profile...</div>
+                      ) : profileError ? (
+                        <div style={{ fontSize: 12, color: '#dc2626', background: '#fee2e2', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 10px' }}>{profileError}</div>
+                      ) : (
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 1fr',
+                          gap: '10px 16px',
+                        }}>
+                          <Field label="Phone" value={profileDetails?.number} />
+                          <Field label="College" value={profileDetails?.clgname} />
+                          <Field label="City" value={profileDetails?.city} />
+                          <Field label="Pincode" value={profileDetails?.pincode} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -786,3 +778,11 @@ const FirstPage = ({ onLogout }) => {
 }
 
 export default FirstPage
+ 
+// Small display field component
+const Field = ({ label, value }) => (
+  <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, padding: '10px 12px' }}>
+    <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 4 }}>{label}</div>
+    <div style={{ fontSize: 13, color: '#111827', fontWeight: 600 }}>{value || '-'}</div>
+  </div>
+);

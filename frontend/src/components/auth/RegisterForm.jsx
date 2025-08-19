@@ -26,8 +26,8 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
 
     try {
       let endpoint = 'user/register';
-      const clientId = 'CLI944750NZGS';
-      const response = await axios.post(`${API_BASE_URL}/clients/${clientId}/mobile/${endpoint}`, formData);
+      const clientId = 'CLI331999AMKW';
+      const response = await axios.post(`${API_BASE_URL}/clients/${clientId}/${endpoint}`, formData);
       
       if (!response.data.success) {
         throw new Error(response.data.message || 'Registration failed');
@@ -59,6 +59,60 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
           placeholder="Enter your full name"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+          <FaIdCard className="mr-2 text-gray-500" /> Mobile Number
+        </label>
+        <input
+          type="tel"
+          name="number"
+          required
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+          placeholder="Enter your mobile number"
+          inputMode="numeric"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+          <FaBuilding className="mr-2 text-gray-500" /> College Name
+        </label>
+        <input
+          type="text"
+          name="clgname"
+          required
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+          placeholder="Enter your college name"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+          <FaGlobe className="mr-2 text-gray-500" /> City
+        </label>
+        <input
+          type="text"
+          name="city"
+          required
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+          placeholder="Enter your city"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+          <FaMapMarkerAlt className="mr-2 text-gray-500" /> Pincode
+        </label>
+        <input
+          type="text"
+          name="pincode"
+          required
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+          placeholder="Enter your pincode"
+          inputMode="numeric"
         />
       </div>
       <div>

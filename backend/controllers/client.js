@@ -45,6 +45,7 @@ const getClientProfile = async (req, res) => {
         ...client.toObject(),
         businessLogoUrl
       }
+      
     });
   } catch (error) {
     console.error('Error fetching client profile:', error);
@@ -216,6 +217,29 @@ const googleLogin = async (req, res) => {
   }
 };
 
+// Get all users associated with the authenticated client
+const getClientUsers = async (req, res) => {
+  try {
+    // req.user is a slim object from authMiddleware. Fetch full client to access userId
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const clientDoc = await Client.findById(req.user.id).select('userId');
+    if (!clientDoc || !clientDoc.userId) {
+      return res.status(400).json({ success: false, message: 'Client not found or missing userId' });
+    }
+
+    const users = await User.find({ clientId: clientDoc.userId }).select(
+      'name email number clgname city pincode createdAt'
+    );
+
+    return res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error('Error fetching client users:', error);
+    return res.status(500).json({ success: false, message: 'Failed to fetch users' });
+  }
+};
 // Register new client
 const registerClient = async (req, res) => {
   try {
@@ -324,4 +348,5 @@ module.exports = {
   googleLogin,
   registerClient,
   getClientProfile,
+  getClientUsers,
 };

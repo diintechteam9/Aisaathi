@@ -582,12 +582,6 @@ const LandingPage = () => {
               
               <div className="mt-8 flex space-x-3">
                 <button
-                  onClick={() => window.open('tel:+919555222841', '_self')}
-                  className="flex-1 bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-200"
-                >
-                  Call Now
-                </button>
-                <button
                   onClick={closeContactModal}
                   className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-lg font-semibold transition duration-200"
                 >

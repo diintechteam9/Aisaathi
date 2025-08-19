@@ -23,7 +23,6 @@ app.get("/", (req, res) => {
 app.use("/api/v1/admin",adminRoutes);
 app.use("/api/v1/client",clientRoutes);
 app.use("/api/v1/user",userRoutes);
-
 app.use("/api/v1/clients/:clientId/user",
     checkClientAccess(),
     (req,res,next)=>{

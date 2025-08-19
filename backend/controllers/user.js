@@ -115,9 +115,65 @@ const googleLogin = async (req, res) => {
 
       });
     }
-  } catch (error) {
-    console.error(error);
+  }catch (error) {
+    console.error('googleLogin error:', error);
     res.status(500).json({ success: false, message: "Google login failed" });
+  }
+};
+
+// Complete profile for Google-authenticated users
+const completeUserProfile = async (req, res) => {
+  try {
+    const clientId = req.clientId || req.params.clientId;
+    const authenticatedUser = req.user; // set by verifyUserToken
+
+    if (!authenticatedUser || !authenticatedUser._id) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const { name, number, clgname, city, pincode, email } = req.body;
+
+    // Basic validation
+    const missing = [];
+    if (!name) missing.push('name');
+    if (!number) missing.push('number');
+    if (!clgname) missing.push('clgname');
+    if (!city) missing.push('city');
+    if (!pincode) missing.push('pincode');
+    if (!email) missing.push('email');
+    if (missing.length) {
+      return res.status(400).json({ success: false, message: `Missing fields: ${missing.join(', ')}` });
+    }
+
+    // Update only the intended fields and mark profile complete
+    const updates = {
+      name,
+      number,
+      clgname,
+      city,
+      pincode,
+      email,
+      isprofileCompleted: true,
+    };
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: authenticatedUser._id, clientId },
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: 'User not found for this client' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profile completed successfully',
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error('completeUserProfile error:', error);
+    return res.status(500).json({ success: false, message: 'Failed to complete profile' });
   }
 };
 
@@ -143,7 +199,7 @@ const getuserProfile = async (req,res) => {
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name,number,clgname,city,pincode, email, password } = req.body;
     console.log("clientId",req.clientId)
     const clientId = req.clientId
     console.log(clientId)
@@ -174,9 +230,14 @@ const registerUser = async (req, res) => {
 
     const user = await User.create({
       name,
+      number,
+      clgname,
+      city,
+      pincode,
       email,
       password: hashedPassword,
       clientId,
+      isprofileCompleted:true,
     });
 
     const token = generateToken(user._id);
@@ -187,8 +248,13 @@ const registerUser = async (req, res) => {
       user: {
         _id: user._id,
         name: user.name,
+        number: user.number,
+        clgname: user.clgname,
+        city: user.city,
+        pincode: user.pincode,
         email: user.email,
         clientId: user.clientId,
+        isprofileCompleted: user.isprofileCompleted,
       },
     });
   } catch (error) {
@@ -204,4 +270,5 @@ module.exports = {
   registerUser,
   googleLogin,
   getuserProfile,
+  completeUserProfile,
 };

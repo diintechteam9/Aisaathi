@@ -52,7 +52,7 @@ const UserDashboard = ({ onLogout }) => {
           setLoading(false);
           return;
         }
-        const response = await fetch(`${API_BASE_URL}/clients/CLI944750NZGS/user/userprofile`, {
+        const response = await fetch(`${API_BASE_URL}/clients/CLI331999AMKW/user/userprofile`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',

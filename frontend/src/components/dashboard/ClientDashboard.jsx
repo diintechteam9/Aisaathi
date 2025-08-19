@@ -13,6 +13,11 @@ import {
   FaChartPie,
   FaFileInvoice,
   FaUsers,
+  FaSyncAlt,
+  FaUserCircle,
+  FaCreditCard,
+  FaTicketAlt,
+  FaClipboardList,
 } from "react-icons/fa";
 import axios from "axios";
 import { API_BASE_URL } from "../../config";
@@ -27,7 +32,28 @@ const ClientDashboard = ({ onLogout }) => {
   const [clientId, setclientId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [users, setusers] = useState(null);
+  const [users, setusers] = useState([]);
+
+  // Fetch users for this client
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const token = sessionStorage.getItem('clienttoken');
+      if (!token) throw new Error('No authentication token found');
+      const resp = await axios.get(`${API_BASE_URL}/client/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!resp.data.success) throw new Error(resp.data.message || 'Failed to fetch users');
+      setusers(resp.data.users || []);
+    } catch (err) {
+      console.error('Fetch users error:', err);
+      setError(err.message);
+      setusers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch client profile data
   const fetchClientProfile = async () => {
@@ -46,9 +72,7 @@ const ClientDashboard = ({ onLogout }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("ye hai api base url  ",API_BASE_URL);
-
-      console.log("Client profile response:", response.data);
+    
       if (response.data.success) {
         setClientData(response.data.data);
         console.log("Client data set to:", response.data.data);
@@ -78,6 +102,13 @@ const ClientDashboard = ({ onLogout }) => {
     }
    
     
+  }, [activeTab]);
+
+  // Fetch users for this client when Users tab is opened
+  useEffect(() => {
+    if (activeTab === 'Users') {
+      fetchUsers();
+    }
   }, [activeTab]);
 
   // Check if screen is mobile and handle resize events
@@ -111,10 +142,10 @@ const ClientDashboard = ({ onLogout }) => {
   const mainNavItems = [
     { name: "Overview", icon: <FaHome /> },
     { name: "Business Profile", icon: <FaBuilding /> },
-    { name: "Chats", icon: <FaUsers /> },
-    { name: "Enquiry", icon: <FaUsers /> },
-    { name: "History", icon: <FaUsers /> },
-    { name: "Datastore", icon: <FaUsers /> },
+    { name: "Users", icon: <FaUsers /> },
+    { name: "Plans", icon: <FaClipboardList /> },
+    { name: "Payment", icon: <FaCreditCard /> },
+    { name: "Tickets ", icon: <FaTicketAlt /> },
 
   ];
 
@@ -540,27 +571,46 @@ const ClientDashboard = ({ onLogout }) => {
 
               {activeTab === "Users" && (
                 <div className="space-y-6">
-                  <div className="bg-gray-50 rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-semibold text-gray-800">Users</h3>
+                    <button
+                      onClick={fetchUsers}
+                      className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition-colors"
+                    >
+                      <FaSyncAlt className="animate-spin-slow" /> Refresh
+                    </button>
+                  </div>
+                  <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                     {Array.isArray(users) && users.length === 0 ? (
-                      <p className="text-gray-500">No users found for this client.</p>
+                      <div className="p-8 text-center text-gray-500">No users found for this client.</div>
                     ) : (
                       <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">
                           <thead>
-                            <tr className="bg-gray-100">
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+                            <tr className="bg-gray-50">
+                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User</th>
+                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
+                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User ID</th>
+                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created</th>
                             </tr>
                           </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
+                          <tbody className="bg-white divide-y divide-gray-100">
                             {users.map(user => (
                               <tr key={user._id} className="hover:bg-gray-50 transition-colors">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user._id}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(user.createdAt).toLocaleString()}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="flex items-center gap-3">
+                                    <div className="h-9 w-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-700">
+                                      <FaUserCircle />
+                                    </div>
+                                    <div>
+                                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                                      <div className="text-xs text-gray-500">{user.city || '-'}</div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.email}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-gray-500">{user._id}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.createdAt ? new Date(user.createdAt).toLocaleString() : '-'}</td>
                               </tr>
                             ))}
                           </tbody>
