@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import html2pdf from 'html2pdf.js';
+import axios from 'axios';
+import { API_BASE_URL } from '../config';
 import Template1 from './Templates/Template1';
 import Template2 from './Templates/Template2';
 import SummaryTab from './SummaryTab';
@@ -73,6 +75,103 @@ const FinalizeTab = (props) => {
         templateRef.current.style.marginTop = originalMarginTop;
         templateRef.current.style.maxWidth = originalMaxWidth;
       });
+    }
+  };
+
+  // Generate PDF Blob from template
+  const generatePdfBlob = async () => {
+    return new Promise((resolve, reject) => {
+      if (!templateRef.current) return reject(new Error('Template not ready'));
+
+      const opt = {
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      const originalTransform = templateRef.current.style.transform;
+      const originalMarginTop = templateRef.current.style.marginTop;
+      const originalMaxWidth = templateRef.current.style.maxWidth;
+      const originalWidth = templateRef.current.style.width;
+
+      templateRef.current.style.transform = 'none';
+      templateRef.current.style.marginTop = '0';
+      templateRef.current.style.maxWidth = '100%';
+      templateRef.current.style.width = '100%';
+
+      const worker = html2pdf().set(opt).from(templateRef.current).toPdf().output('blob');
+      worker.then((blob) => {
+        // Restore styles
+        templateRef.current.style.transform = originalTransform;
+        templateRef.current.style.marginTop = originalMarginTop;
+        templateRef.current.style.maxWidth = originalMaxWidth;
+        templateRef.current.style.width = originalWidth;
+        resolve(blob);
+      }).catch((err) => {
+        templateRef.current.style.transform = originalTransform;
+        templateRef.current.style.marginTop = originalMarginTop;
+        templateRef.current.style.maxWidth = originalMaxWidth;
+        templateRef.current.style.width = originalWidth;
+        reject(err);
+      });
+    });
+  };
+
+  const handleSaveResume = async () => {
+    try {
+      const token = localStorage.getItem('usertoken');
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      if (!token || !userData.clientId) {
+        alert('You must be logged in.');
+        return;
+      }
+
+      // 1) Generate PDF Blob
+      const pdfBlob = await generatePdfBlob();
+      const fileName = `${(formData?.heading?.firstName || 'resume')}_${Date.now()}.pdf`;
+
+      // 2) Get presigned URL
+      const uploadUrlResp = await axios.get(
+        `${API_BASE_URL}/clients/${userData.clientId}/user/resumes/upload-url`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { fileName, fileType: 'application/pdf' }
+        }
+      );
+      if (!uploadUrlResp.data?.success) throw new Error('Failed to get upload URL');
+      const { uploadUrl, key } = uploadUrlResp.data;
+
+      // 3) Upload to S3
+      await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/pdf' },
+        body: pdfBlob
+      });
+
+      // 4) Save record
+      const size = pdfBlob.size;
+      const title = `${formData?.heading?.firstName || ''} ${formData?.heading?.surname || ''}`.trim() || 'Resume';
+      const templateName = typeof selectedTemplate === 'number' ? `Template${selectedTemplate + 1}` : 'Template';
+
+      const saveResp = await axios.post(
+        `${API_BASE_URL}/clients/${userData.clientId}/user/resumes`,
+        {
+          key,
+          fileName,
+          fileType: 'application/pdf',
+          fileSize: size,
+          title,
+          templateName,
+          status: 'final'
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (!saveResp.data?.success) throw new Error('Failed to save resume');
+      alert('Resume saved successfully');
+    } catch (err) {
+      console.error('Save resume error:', err);
+      alert(err.message || 'Failed to save resume');
     }
   };
 
@@ -197,6 +296,23 @@ const FinalizeTab = (props) => {
             }}
           >
             Download
+          </button>
+          <div style={{ height: 12 }} />
+          <button
+            type="button"
+            onClick={handleSaveResume}
+            style={{
+              border: 'none',
+              background: '#7c3aed',
+              color: 'white',
+              fontWeight: 700,
+              fontSize: isMobile ? 16 : 18,
+              borderRadius: 30,
+              padding: isMobile ? '8px 24px' : '10px 36px',
+              cursor: 'pointer',
+            }}
+          >
+            Save Resume
           </button>
         </div>
       </>
@@ -354,6 +470,24 @@ const FinalizeTab = (props) => {
                 }}
               >
                 📥 Download Resume
+              </button>
+              <div style={{ width: 12 }} />
+              <button
+                type="button"
+                onClick={handleSaveResume}
+                style={{
+                  border: 'none',
+                  background: '#7c3aed',
+                  color: 'white',
+                  fontWeight: 700,
+                  fontSize: 16,
+                  borderRadius: 30,
+                  padding: '12px 32px',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)'
+                }}
+              >
+                💾 Save Resume
               </button>
             </div>
           )}

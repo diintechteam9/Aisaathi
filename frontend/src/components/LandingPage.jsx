@@ -1,11 +1,51 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { FaIndianRupeeSign } from "react-icons/fa6";
+import { FaWhatsapp } from "react-icons/fa";
+import axios from 'axios'
+import { API_BASE_URL } from '../config'
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const navigate = useNavigate()
+  const params = useParams()
+  const location = useLocation()
+  const whatsappNumber = '919555222841'
+  const whatsappMessage = 'Hello Aisaathi, I need a little help in building my resume'
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
+  const [billingCycle, setBillingCycle] = useState('monthly')
+  const [prices, setPrices] = useState({
+    monthly: { free: 0, pro: 199, star: 299 },
+    yearly: { free: 0, pro: 1999, star: 2999 }
+  })
+
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        // Resolve client id for public pricing: route (/c/:clientId) → query (?c=) → env → hardcoded default
+        const searchParams = new URLSearchParams(location.search)
+        const queryClientId = searchParams.get('c')
+        const envDefaultClientId = import.meta.env.VITE_DEFAULT_CLIENT_ID
+        const fallbackClientId = envDefaultClientId || 'CLI331999AMKW'
+        const vanityClientId = params.clientId || queryClientId || fallbackClientId
+        const url = `${API_BASE_URL}/pricing/c/${vanityClientId}/pricing`
+        const resp = await axios.get(url)
+        if (resp?.data?.success && resp?.data?.pricing) {
+          const serverPricing = resp.data.pricing
+          setPrices({
+            monthly: serverPricing.monthly || { free: 0, pro: 199, star: 299 },
+            yearly: serverPricing.yearly || { free: 0, pro: 1999, star: 2999 }
+          })
+        }
+      } catch (error) {
+        // Silent fail; default prices will be shown
+        console.error('Failed to load pricing for landing page', error)
+      }
+    }
+
+    fetchPricing()
+  }, [params.clientId, location.search])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -333,6 +373,20 @@ const LandingPage = () => {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Choose the plan that best fits your needs
             </p>
+            <div className="mt-6 inline-flex bg-gray-100 rounded-full p-1">
+              <button
+                onClick={() => setBillingCycle('monthly')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${billingCycle === 'monthly' ? 'bg-violet-600 text-white' : 'text-gray-700 hover:text-gray-900'}`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingCycle('yearly')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${billingCycle === 'yearly' ? 'bg-violet-600 text-white' : 'text-gray-700 hover:text-gray-900'}`}
+              >
+                Yearly
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -342,9 +396,9 @@ const LandingPage = () => {
               <div className="mb-6">
                 <span className="text-4xl font-bold text-gray-900 flex items-center">
                   <FaIndianRupeeSign className="inline-block mr-1"/>
-                  <span>0</span>
+                  <span>{prices[billingCycle].free}</span>
                 </span>
-                <span className="text-gray-600">/month</span>
+                <span className="text-gray-600">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center">
@@ -368,24 +422,22 @@ const LandingPage = () => {
               </ul>
               <button 
                 onClick={handleStartBuilding}
-                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200"
+                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200 mt-16"
               >
                 Get Started Free
               </button>
             </div>
 
             {/* Pro Plan */}
-            <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-violet-600 relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-semibold">Most Popular</span>
-              </div>
+            <div className="bg-white p-8 rounded-xl shadow-lg  border-2 border-gray-200 relative">
+              
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Pro</h3>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-gray-900 flex items-center">
                   <FaIndianRupeeSign className="inline-block mr-1"/>
-                  <span>199</span>
+                  <span>{prices[billingCycle].pro}</span>
                 </span>
-                <span className="text-gray-600">/month</span>
+                <span className="text-gray-600">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center">
@@ -419,20 +471,20 @@ const LandingPage = () => {
                   Priority Support
                 </li>
               </ul>
-              <button className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-semibold transition duration-200">
+              <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200">
                 Start Pro Trial
               </button>
             </div>
 
-            {/* Enterprise Plan */}
+            {/* star Plan */}
             <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-gray-200">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Enterprise</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">star</h3>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-gray-900 flex items-center">
                   <FaIndianRupeeSign className="inline-block mr-1"/>
-                  <span>299</span>
+                  <span>{prices[billingCycle].star}</span>
                 </span>
-                <span className="text-gray-600">/month</span>
+                <span className="text-gray-600">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center">
@@ -467,7 +519,7 @@ const LandingPage = () => {
                 </li>
               </ul>
               <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200">
-                Contact Sales
+                Start Star Trial
               </button>
             </div>
           </div>
@@ -577,6 +629,19 @@ const LandingPage = () => {
                     <span className="font-semibold">Hello Aisaathi,</span><br />
                     I need a little help in building my resume
                   </p>
+                </div>
+
+                <div className="flex items-center justify-center pt-2">
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg transition-colors"
+                    aria-label="Chat on WhatsApp"
+                    title="Chat on WhatsApp"
+                  >
+                    <FaWhatsapp className="w-7 h-7" />
+                  </a>
                 </div>
               </div>
               

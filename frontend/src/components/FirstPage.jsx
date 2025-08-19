@@ -10,6 +10,7 @@ import ExperienceTab from './ExperienceTab';
 import SkillsTab from './SkillsTab';
 import SummaryTab from './SummaryTab';
 import FinalizeTab from './FinalizeTab';
+import SavedResumeTab from './SavedResumeTab';
 
 const steps = [
   { number: 1, label: 'Templates'},
@@ -19,6 +20,7 @@ const steps = [
   { number: 5, label: 'Skills' },
   { number: 6, label: 'Career Overview' },
   { number: 7, label: 'Wrap-Up' },
+  { number: 8, label: 'Saved Resume' },
 ];
 
 const templateComponents = [
@@ -770,6 +772,11 @@ const FirstPage = ({ onLogout }) => {
             updateExperience={updateExperience}
             updateSkills={updateSkills}
             updateHeading={updateHeading}
+          />
+        )}
+        {selectedStep === 7 && (
+          <SavedResumeTab 
+            onGoBack={() => handleGoBack(6)}
           />
         )}
       </div>

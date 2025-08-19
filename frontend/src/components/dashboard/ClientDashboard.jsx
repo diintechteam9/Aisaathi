@@ -23,6 +23,7 @@ import axios from "axios";
 import { API_BASE_URL } from "../../config";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
 const ClientDashboard = ({ onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -33,6 +34,18 @@ const ClientDashboard = ({ onLogout }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [users, setusers] = useState([]);
+  const [userSearchPhone, setUserSearchPhone] = useState('');
+  const [billingCycle, setBillingCycle] = useState('monthly');
+  const [isEditingPrices, setIsEditingPrices] = useState(false);
+  const [prices, setPrices] = useState({
+    monthly: { free: 0, pro: 199, star: 299 },
+    yearly: { free: 0, pro: 1999, star: 2999 }
+  });
+  const [tempPriceInputs, setTempPriceInputs] = useState({
+    free: 0,
+    pro: 199,
+    star: 299
+  });
 
   // Fetch users for this client
   const fetchUsers = async () => {
@@ -45,7 +58,13 @@ const ClientDashboard = ({ onLogout }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!resp.data.success) throw new Error(resp.data.message || 'Failed to fetch users');
-      setusers(resp.data.users || []);
+      const fetchedUsers = Array.isArray(resp.data.users) ? [...resp.data.users] : [];
+      fetchedUsers.sort((a, b) => {
+        const aTime = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTime = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bTime - aTime;
+      });
+      setusers(fetchedUsers);
     } catch (err) {
       console.error('Fetch users error:', err);
       setError(err.message);
@@ -104,10 +123,42 @@ const ClientDashboard = ({ onLogout }) => {
     
   }, [activeTab]);
 
+  useEffect(() => {
+    // Sync temp inputs with current cycle when entering edit mode or changing cycle
+    setTempPriceInputs({ ...prices[billingCycle] });
+  }, [billingCycle, isEditingPrices]);
+
   // Fetch users for this client when Users tab is opened
   useEffect(() => {
     if (activeTab === 'Users') {
       fetchUsers();
+    }
+  }, [activeTab]);
+
+  // Fetch pricing for Plans tab
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        const token = sessionStorage.getItem('clienttoken');
+        const resp = await axios.get(`${API_BASE_URL}/pricing`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        if (resp?.data?.success && resp?.data?.pricing) {
+          const serverPricing = resp.data.pricing;
+          // Normalize to expected shape
+          const normalized = {
+            monthly: serverPricing.monthly || { free: 0, pro: 199, star: 299 },
+            yearly: serverPricing.yearly || { free: 0, pro: 1999, star: 2999 }
+          };
+          setPrices(normalized);
+        }
+      } catch (error) {
+        console.error('Failed to fetch pricing', error);
+      }
+    };
+
+    if (activeTab === 'Plans') {
+      fetchPricing();
     }
   }, [activeTab]);
 
@@ -145,7 +196,6 @@ const ClientDashboard = ({ onLogout }) => {
     { name: "Users", icon: <FaUsers /> },
     { name: "Plans", icon: <FaClipboardList /> },
     { name: "Payment", icon: <FaCreditCard /> },
-    { name: "Tickets ", icon: <FaTicketAlt /> },
 
   ];
 
@@ -569,47 +619,304 @@ const ClientDashboard = ({ onLogout }) => {
                 </div>
               )}
 
+              {activeTab === "Plans" && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-semibold text-gray-800">Plans</h3>
+                    <div className="flex items-center gap-3">
+                      <div className="inline-flex bg-gray-100 rounded-full p-1">
+                        <button
+                          onClick={() => setBillingCycle('monthly')}
+                          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${billingCycle === 'monthly' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-gray-900'}`}
+                        >
+                          Monthly
+                        </button>
+                        <button
+                          onClick={() => setBillingCycle('yearly')}
+                          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${billingCycle === 'yearly' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:text-gray-900'}`}
+                        >
+                          Yearly
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => setIsEditingPrices((prev) => !prev)}
+                        className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition-colors"
+                      >
+                        {isEditingPrices ? 'Close Edit' : 'Edit Prices'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {isEditingPrices && (
+                    <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {['free','pro','star'].map((plan) => (
+                          <div key={plan} className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700 capitalize">{plan} price ({billingCycle})</label>
+                            <div className="flex items-center gap-2">
+                              <div className="text-gray-600"><FaIndianRupeeSign /></div>
+                              <input
+                                type="text"
+                                value={String(tempPriceInputs[plan] ?? '')}
+                                onChange={(e) => setTempPriceInputs((prev) => ({ ...prev, [plan]: e.target.value }))}
+                                placeholder="Enter amount"
+                                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex justify-end gap-3 mt-4">
+                        <button
+                          onClick={() => {
+                            setIsEditingPrices(false);
+                            setTempPriceInputs({ ...prices[billingCycle] });
+                          }}
+                          className="px-4 py-2 text-sm rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            (async () => {
+                              try {
+                                const token = sessionStorage.getItem('clienttoken');
+                                // Parse values to numbers; ensure valid numeric inputs
+                                const parsedCycle = Object.entries(tempPriceInputs).reduce((acc, [key, value]) => {
+                                  const num = typeof value === 'number' ? value : parseFloat(String(value).trim());
+                                  if (!isFinite(num)) {
+                                    throw new Error('Please enter valid numeric values for all plans');
+                                  }
+                                  acc[key] = num;
+                                  return acc;
+                                }, {});
+                                const body = { [billingCycle]: parsedCycle };
+                                const resp = await axios.put(`${API_BASE_URL}/pricing`, body, {
+                                  headers: token ? { Authorization: `Bearer ${token}` } : {}
+                                });
+                                if (resp?.data?.success && resp?.data?.pricing) {
+                                  const updated = resp.data.pricing;
+                                  setPrices({
+                                    monthly: updated.monthly,
+                                    yearly: updated.yearly
+                                  });
+                                  toast.success('Prices updated');
+                                } else {
+                                  // Fallback to local update if server did not return pricing
+                                  setPrices((prev) => ({ ...prev, [billingCycle]: { ...tempPriceInputs } }));
+                                  toast.success('Prices updated');
+                                }
+                              } catch (error) {
+                                console.error('Failed to update pricing', error);
+                                toast.error('Failed to update prices');
+                              } finally {
+                                setIsEditingPrices(false);
+                              }
+                            })();
+                          }}
+                          className="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-gray-200">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4">Free</h3>
+                      <div className="mb-6">
+                        <span className="text-4xl font-bold text-gray-900 flex items-center">
+                          <FaIndianRupeeSign className="inline-block mr-1"/>
+                          <span>{prices[billingCycle].free}</span>
+                        </span>
+                        <span className="text-gray-600">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
+                      </div>
+                      <ul className="space-y-3 mb-8">
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          1 Resume
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Basic Templates
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          PDF Export
+                        </li>
+                      </ul>
+                      <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200">
+                        Get Started Free
+                      </button>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-gray-200">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4">Pro</h3>
+                      <div className="mb-6">
+                        <span className="text-4xl font-bold text-gray-900 flex items-center">
+                          <FaIndianRupeeSign className="inline-block mr-1"/>
+                          <span>{prices[billingCycle].pro}</span>
+                        </span>
+                        <span className="text-gray-600">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
+                      </div>
+                      <ul className="space-y-3 mb-8">
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Unlimited Resumes
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Premium Templates
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          AI Optimization
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Multiple Formats
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Priority Support
+                        </li>
+                      </ul>
+                      <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200">
+                        Start Pro Trial
+                      </button>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-gray-200">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4">Star</h3>
+                      <div className="mb-6">
+                        <span className="text-4xl font-bold text-gray-900 flex items-center">
+                          <FaIndianRupeeSign className="inline-block mr-1"/>
+                          <span>{prices[billingCycle].star}</span>
+                        </span>
+                        <span className="text-gray-600">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
+                      </div>
+                      <ul className="space-y-3 mb-8">
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Everything in Pro
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Team Collaboration
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Custom Branding
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          API Access
+                        </li>
+                        <li className="flex items-center">
+                          <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Dedicated Support
+                        </li>
+                      </ul>
+                      <button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold transition duration-200">
+                        Start Star Trial
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {activeTab === "Users" && (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-semibold text-gray-800">Users</h3>
-                    <button
-                      onClick={fetchUsers}
-                      className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition-colors"
-                    >
-                      <FaSyncAlt className="animate-spin-slow" /> Refresh
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="text"
+                        value={userSearchPhone}
+                        onChange={(e) => setUserSearchPhone(e.target.value)}
+                        placeholder="Search by phone number"
+                        className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                      <button
+                        onClick={fetchUsers}
+                        className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition-colors"
+                      >
+                        <FaSyncAlt className="animate-spin-slow" /> Refresh
+                      </button>
+                    </div>
                   </div>
                   <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                    {Array.isArray(users) && users.length === 0 ? (
+                    {Array.isArray(users) && users.filter(u => {
+                      const q = (userSearchPhone || '').trim();
+                      if (!q) return true;
+                      const digitsQ = q.replace(/\D/g, '');
+                      const phoneDigits = String(u.number || '').replace(/\D/g, '');
+                      return phoneDigits.includes(digitsQ);
+                    }).length === 0 ? (
                       <div className="p-8 text-center text-gray-500">No users found for this client.</div>
                     ) : (
                       <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">
                           <thead>
                             <tr className="bg-gray-50">
-                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User</th>
+                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
                               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
-                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User ID</th>
+                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Phone</th>
+                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">City</th>
+                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">College</th>
+                              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pin Code</th>
                               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created</th>
                             </tr>
                           </thead>
                           <tbody className="bg-white divide-y divide-gray-100">
-                            {users.map(user => (
+                            {(Array.isArray(users) ? users.filter(u => {
+                              const q = (userSearchPhone || '').trim();
+                              if (!q) return true;
+                              const digitsQ = q.replace(/\\D/g, '');
+                              const phoneDigits = String(u.number || '').replace(/\\D/g, '');
+                              return phoneDigits.includes(digitsQ);
+                            }) : []).map(user => (
                               <tr key={user._id} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4 whitespace-nowrap">
                                   <div className="flex items-center gap-3">
                                     <div className="h-9 w-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-700">
                                       <FaUserCircle />
                                     </div>
-                                    <div>
-                                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                                      <div className="text-xs text-gray-500">{user.city || '-'}</div>
-                                    </div>
+                                    <div className="text-sm font-medium text-gray-900">{user.name}</div>
                                   </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.email}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-gray-500">{user._id}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.number || '-'}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.city || '-'}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.clgname || '-'}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.pincode || '-'}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.createdAt ? new Date(user.createdAt).toLocaleString() : '-'}</td>
                               </tr>
                             ))}

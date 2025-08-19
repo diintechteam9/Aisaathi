@@ -7,6 +7,8 @@ const { checkClientAccess } = require("./middlewares/authmiddlewares");
 const adminRoutes = require("./routes/admin");
 const clientRoutes = require("./routes/client");
 const userRoutes = require("./routes/user");
+const pricingRoutes = require("./routes/pricing");
+const resumeRoutes = require("./routes/resume");
 
 const app = express();
 
@@ -23,6 +25,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/admin",adminRoutes);
 app.use("/api/v1/client",clientRoutes);
 app.use("/api/v1/user",userRoutes);
+app.use("/api/v1/pricing", pricingRoutes);
 app.use("/api/v1/clients/:clientId/user",
     checkClientAccess(),
     (req,res,next)=>{
@@ -30,6 +33,13 @@ app.use("/api/v1/clients/:clientId/user",
         next();
     },
     userRoutes);
+app.use("/api/v1/clients/:clientId/user",
+    checkClientAccess(),
+    (req,res,next)=>{
+        req.clientId = req.params.clientId;
+        next();
+    },
+    resumeRoutes);
 
 const PORT = 4000 || process.env.PORT;
 

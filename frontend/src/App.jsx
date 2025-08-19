@@ -12,6 +12,7 @@ function App() {
     <Router>
        <Routes>
          <Route path="/" element={<LandingPage />} />
+         <Route path="/c/:clientId" element={<LandingPage />} />
          <Route path="/firstpage" element={<Navigate to="/auth/firstpage" replace />} />
          <Route path="/admin/*" element={<Admin/>}/>
          <Route path="/auth/*" element={<User/>}/>
