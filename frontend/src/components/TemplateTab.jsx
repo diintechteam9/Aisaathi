@@ -209,18 +209,7 @@ const TemplateTab = ({ onUseTemplate }) => {
             marginBottom: 32,
             alignItems: 'center',
           }}>
-            <button style={{
-              background: 'none',
-              color: '#7c3aed',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: 18,
-              textDecoration: 'underline',
-              cursor: 'pointer',
-              padding: '10px 24px',
-            }}>
-              Choose later
-            </button>
+           
             <button
               style={{
                 background: '#6b3b7a',

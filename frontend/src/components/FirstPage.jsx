@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { API_BASE_URL } from '../config'
 import HeadingTab from './HeadingTab'
 import TemplateTab from './TemplateTab';
 import Template1 from './Templates/Template1';
@@ -10,7 +8,6 @@ import ExperienceTab from './ExperienceTab';
 import SkillsTab from './SkillsTab';
 import SummaryTab from './SummaryTab';
 import FinalizeTab from './FinalizeTab';
-import SavedResumeTab from './SavedResumeTab';
 
 const steps = [
   { number: 1, label: 'Templates'},
@@ -20,7 +17,6 @@ const steps = [
   { number: 5, label: 'Skills' },
   { number: 6, label: 'Career Overview' },
   { number: 7, label: 'Wrap-Up' },
-  { number: 8, label: 'Saved Resume' },
 ];
 
 const templateComponents = [
@@ -34,12 +30,7 @@ const FirstPage = ({ onLogout }) => {
   const [selectedTemplateIdx, setSelectedTemplateIdx] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [profileDetails, setProfileDetails] = useState(null);
-  const [loadingProfile, setLoadingProfile] = useState(false);
-  const [profileError, setProfileError] = useState(null);
-
+  
   // Check if screen is mobile size
   useEffect(() => {
     const checkMobile = () => {
@@ -51,23 +42,6 @@ const FirstPage = ({ onLogout }) => {
     
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  // Close settings dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isSettingsOpen && !event.target.closest('.settings-container')) {
-        setIsSettingsOpen(false);
-      }
-      if (isProfileOpen && !event.target.closest('.profile-container')) {
-        setIsProfileOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSettingsOpen, isProfileOpen]);
 
   // Centralized state for all form data
   const [formData, setFormData] = useState({
@@ -192,52 +166,6 @@ const FirstPage = ({ onLogout }) => {
       ...prev,
       summary: newSummary
     }));
-  };
-
-  const handleSettingsClick = () => {
-    setIsSettingsOpen(!isSettingsOpen);
-  };
-
-  const handleProfileClick = () => {
-    const next = !isProfileOpen;
-    setIsProfileOpen(next);
-    if (next) {
-      (async () => {
-        try {
-          setLoadingProfile(true);
-          setProfileError(null);
-          const token = localStorage.getItem('usertoken');
-          const raw = localStorage.getItem('userData');
-          const parsed = raw ? JSON.parse(raw) : {};
-          const clientId = parsed.clientId;
-          if (!token || !clientId) {
-            throw new Error('Missing user token or clientId');
-          }
-          const resp = await axios.get(`${API_BASE_URL}/clients/${clientId}/user/userprofile`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (!resp.data?.success) {
-            throw new Error(resp.data?.message || 'Failed to load profile');
-          }
-          setProfileDetails(resp.data.user || null);
-        } catch (e) {
-          console.error('Load profile error:', e);
-          setProfileError(e.message);
-          setProfileDetails(null);
-        } finally {
-          setLoadingProfile(false);
-        }
-      })();
-    }
-  };
-
-  const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-    } else {
-      // Fallback: redirect to landing page
-      window.location.href = '/';
-    }
   };
 
   return (
@@ -399,288 +327,7 @@ const FirstPage = ({ onLogout }) => {
           </div>
         </div>
 
-        {/* Bottom Action Buttons */}
-        <div style={{ 
-          marginTop: 16, 
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 8,
-        }}>
-          {/* Help Button */}
-          <button
-            style={{
-              background: 'transparent',
-              border: '1px solid #c4b5fd',
-              color: '#c4b5fd',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: isMobile ? 10 : 11,
-              fontWeight: 500,
-              transition: 'all 0.2s',
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 6,
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = '#c4b5fd';
-              e.target.style.color = '#2a003f';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'transparent';
-              e.target.style.color = '#c4b5fd';
-            }}
-          >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Help
-          </button>
-
-          {/* Profile Button */}
-          <div className="profile-container" style={{ position: 'relative' }}>
-            <button
-              style={{
-                background: 'transparent',
-                border: '1px solid #c4b5fd',
-                color: '#c4b5fd',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: isMobile ? 10 : 11,
-                fontWeight: 500,
-                transition: 'all 0.2s',
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 6,
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = '#c4b5fd';
-                e.target.style.color = '#2a003f';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'transparent';
-                e.target.style.color = '#c4b5fd';
-              }}
-              onClick={handleProfileClick}
-            >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              Profile
-            </button>
-
-            {/* Profile Popup */}
-            {isProfileOpen && (
-              <>
-                {/* Backdrop Overlay */}
-                <div 
-                  style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0, 0, 0, 0.3)',
-                    zIndex: 999,
-                  }}
-                  onClick={() => setIsProfileOpen(false)}
-                />
-                
-                {/* Profile Popup Card (top-left) */}
-                <div style={{
-                  position: 'fixed',
-                  top: '24px',
-                  left: '700px',
-                  background: 'white',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '16px',
-                  padding: '20px',
-                  boxShadow: '0 10px 25px rgba(0,0,0,0.08)',
-                  zIndex: 1000,
-                  width: isMobile ? 'calc(100% - 80px)' : '360px',
-                  minHeight: '200px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '14px',
-                }}>
-                  {/* Close Button */}
-                  <button
-                    onClick={() => setIsProfileOpen(false)}
-                    style={{
-                      position: 'absolute',
-                      top: '12px',
-                      right: '12px',
-                      background: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: '4px',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      transition: 'background 0.2s',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = '#f3f4f6';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'transparent';
-                    }}
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-
-                  {/* Profile Content */}
-                  <div style={{ width: '100%' }}>
-                    {/* Header */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{
-                        width: '56px', height: '56px', borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 100%)',
-                        color: 'white', fontWeight: 700, fontSize: 20,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 4px 12px rgba(139,92,246,0.35)'
-                      }}>
-                        {(() => {
-                          const base = profileDetails || {};
-                          const local = (() => { try { return JSON.parse(localStorage.getItem('userData')||'{}'); } catch{ return {}; }})();
-                          const nm = base.name || local.name || 'U';
-                          return nm.charAt(0).toUpperCase();
-                        })()}
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>
-                          {(profileDetails?.name) || (()=>{ try { return JSON.parse(localStorage.getItem('userData')||'{}').name } catch{ return 'User'; }})() || 'User'}
-                        </div>
-                        <div style={{ fontSize: 13, color: '#6b7280' }}>
-                          {(profileDetails?.email) || (()=>{ try { return JSON.parse(localStorage.getItem('userData')||'{}').email } catch{ return ''; }})()}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Body */}
-                    <div style={{ marginTop: 12 }}>
-                      {loadingProfile ? (
-                        <div style={{ fontSize: 13, color: '#6b7280' }}>Loading profile...</div>
-                      ) : profileError ? (
-                        <div style={{ fontSize: 12, color: '#dc2626', background: '#fee2e2', border: '1px solid #fecaca', borderRadius: 8, padding: '8px 10px' }}>{profileError}</div>
-                      ) : (
-                        <div style={{
-                          display: 'grid',
-                          gridTemplateColumns: '1fr 1fr',
-                          gap: '10px 16px',
-                        }}>
-                          <Field label="Phone" value={profileDetails?.number} />
-                          <Field label="College" value={profileDetails?.clgname} />
-                          <Field label="City" value={profileDetails?.city} />
-                          <Field label="Pincode" value={profileDetails?.pincode} />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Settings Button with Dropdown */}
-          <div className="settings-container" style={{ position: 'relative' }}>
-            <button
-              style={{
-                background: 'transparent',
-                border: '1px solid #c4b5fd',
-                color: '#c4b5fd',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: isMobile ? 10 : 11,
-                fontWeight: 500,
-                transition: 'all 0.2s',
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 6,
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = '#c4b5fd';
-                e.target.style.color = '#2a003f';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'transparent';
-                e.target.style.color = '#c4b5fd';
-              }}
-              onClick={handleSettingsClick}
-            >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.996.797 2.41.067 3.14A2.89 2.89 0 0016 18.25a2.89 2.89 0 002.92-2.69c.007-.07.007-.14.007-.21 0-.07-.007-.14-.007-.21A2.89 2.89 0 0016 13.5a2.89 2.89 0 00-2.92-2.69c-.007-.07-.007-.14-.007-.21 0-.07.007-.14.007-.21A2.89 2.89 0 0016 8.75a2.89 2.89 0 00-2.92-2.69c-.007-.07-.007-.14-.007-.21 0-.07.007-.14.007-.21A2.89 2.89 0 0016 4z" />
-              </svg>
-              Settings
-            </button>
-
-            {/* Settings Dropdown - Integrated Sub-button Style */}
-            {isSettingsOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                left: '0',
-                right: '0',
-                background: 'transparent',
-                border: 'none',
-                padding: '0',
-                marginTop: '2px',
-                zIndex: 100,
-                width: '100%',
-              }}>
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    background: 'rgba(196, 181, 253, 0.1)',
-                    border: '1px solid #c4b5fd',
-                    borderTop: 'none',
-                    borderTopLeftRadius: '0',
-                    borderTopRightRadius: '0',
-                    borderBottomLeftRadius: '6px',
-                    borderBottomRightRadius: '6px',
-                    color: '#c4b5fd',
-                    padding: '6px 12px',
-                    cursor: 'pointer',
-                    fontSize: isMobile ? 9 : 10,
-                    fontWeight: 500,
-                    textAlign: 'center',
-                    width: '100%',
-                    transition: 'all 0.2s',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 5,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = 'rgba(196, 181, 253, 0.2)';
-                    e.target.style.color = '#e9d5ff';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'rgba(196, 181, 253, 0.1)';
-                    e.target.style.color = '#c4b5fd';
-                  }}
-                >
-                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+        {/* Bottom action buttons removed */}
       </div>
 
       {/* Mobile Overlay */}
@@ -774,22 +421,10 @@ const FirstPage = ({ onLogout }) => {
             updateHeading={updateHeading}
           />
         )}
-        {selectedStep === 7 && (
-          <SavedResumeTab 
-            onGoBack={() => handleGoBack(6)}
-          />
-        )}
+        {/* Saved Resume step removed */}
       </div>
     </div>
   )
 }
 
 export default FirstPage
- 
-// Small display field component
-const Field = ({ label, value }) => (
-  <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, padding: '10px 12px' }}>
-    <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 4 }}>{label}</div>
-    <div style={{ fontSize: 13, color: '#111827', fontWeight: 600 }}>{value || '-'}</div>
-  </div>
-);

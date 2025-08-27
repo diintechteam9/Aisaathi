@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { FaWhatsapp } from "react-icons/fa";
-import axios from 'axios'
-import { API_BASE_URL } from '../config'
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const navigate = useNavigate()
-  const params = useParams()
-  const location = useLocation()
   const whatsappNumber = '919555222841'
   const whatsappMessage = 'Hello Aisaathi, I need a little help in building my resume'
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
@@ -20,60 +16,15 @@ const LandingPage = () => {
     yearly: { free: 0, pro: 1999, star: 2999 }
   })
 
-  useEffect(() => {
-    const fetchPricing = async () => {
-      try {
-        // Resolve client id for public pricing: route (/c/:clientId) → query (?c=) → env → hardcoded default
-        const searchParams = new URLSearchParams(location.search)
-        const queryClientId = searchParams.get('c')
-        const envDefaultClientId = import.meta.env.VITE_DEFAULT_CLIENT_ID
-        const fallbackClientId = envDefaultClientId || 'CLI331999AMKW'
-        const vanityClientId = params.clientId || queryClientId || fallbackClientId
-        const url = `${API_BASE_URL}/pricing/c/${vanityClientId}/pricing`
-        const resp = await axios.get(url)
-        if (resp?.data?.success && resp?.data?.pricing) {
-          const serverPricing = resp.data.pricing
-          setPrices({
-            monthly: serverPricing.monthly || { free: 0, pro: 199, star: 299 },
-            yearly: serverPricing.yearly || { free: 0, pro: 1999, star: 2999 }
-          })
-        }
-      } catch (error) {
-        // Silent fail; default prices will be shown
-        console.error('Failed to load pricing for landing page', error)
-      }
-    }
-
-    fetchPricing()
-  }, [params.clientId, location.search])
+  // Static pricing; no backend calls
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
 
   const handleStartBuilding = () => {
-    // Check if user is authenticated
-    const usertoken = localStorage.getItem('usertoken');
-    const userData = localStorage.getItem('userData');
-    
-    if (usertoken && userData) {
-      try {
-        const parsedUserData = JSON.parse(userData);
-        if (parsedUserData.role === 'user') {
-          // User is authenticated, go to first page
-          navigate('/auth/firstpage');
-        } else {
-          // Invalid role, redirect to login
-          navigate('/auth');
-        }
-      } catch (error) {
-        // Error parsing user data, redirect to login
-        navigate('/auth');
-      }
-    } else {
-      // User not authenticated, redirect to login
-      navigate('/auth');
-    }
+    // Directly open the builder TemplateTab without any auth or Google logic
+    navigate('/templatetab');
   }
 
   const handleReachOut = () => {
@@ -115,7 +66,7 @@ const LandingPage = () => {
             {/* CTA Buttons */}
             <div className="hidden md:block">
               <button 
-                onClick={()=>navigate('/auth')}
+                onClick={()=>navigate('/templatetab')}
                 className="bg-violet-600 cursor-pointer hover:bg-violet-700 text-white px-4 py-2 rounded-md text-sm font-medium mr-3">
                 Sign In
               </button>
@@ -151,7 +102,9 @@ const LandingPage = () => {
               <a href="#pricing" className="text-gray-700 hover:text-violet-600 block px-3 py-2 rounded-md text-base font-medium">Pricing</a>
               <a href="#contact" className="text-gray-700 hover:text-violet-600 block px-3 py-2 rounded-md text-base font-medium">Contact</a>
               <div className="pt-4 pb-3 border-t border-gray-200">
-                <button className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full mb-2">
+                <button 
+                  onClick={()=>navigate('/templatetab')}
+                  className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full mb-2">
                   Sign In
                 </button>
                 <button 

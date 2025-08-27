@@ -50,6 +50,20 @@ const EducationTab = (props) => {
 
   const educations = formData && formData.length > 0 ? formData : [{ ...emptyEducation }];
 
+  // Validation function to check if all required fields are filled
+  const isFormValid = () => {
+    return educations.every(education => {
+      return (
+        education.schoolName.trim() !== '' &&
+        education.schoolLocation.trim() !== '' &&
+        education.fieldOfStudy.trim() !== '' &&
+        education.percentage.trim() !== '' &&
+        education.gradMonth !== '' &&
+        education.gradYear !== ''
+      );
+    });
+  };
+
   const handleChange = (idx, e) => {
     const { name, value } = e.target;
     const updatedEducations = educations.map((ed, i) => i === idx ? { ...ed, [name]: value } : ed);
@@ -159,7 +173,7 @@ const EducationTab = (props) => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
-                marginBottom: 24,
+                marginBottom: 10,
                 padding: 0,
               }}
             >
@@ -181,7 +195,7 @@ const EducationTab = (props) => {
             {/* Required field indicator */}
             <div style={{ 
               position: 'absolute', 
-              top: isMobile ? -42 : -40, 
+              top: isMobile ? -29 : -30, 
               right: 0, 
               fontSize: 12, 
               fontWeight: 500, 
@@ -245,7 +259,7 @@ const EducationTab = (props) => {
                         />
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Location</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Location *</label>
                         <input
                           type="text"
                           name="schoolLocation"
@@ -272,7 +286,7 @@ const EducationTab = (props) => {
                         />
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Percentage</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Percentage *</label>
                         <input
                           type="text"
                           name="percentage"
@@ -287,21 +301,21 @@ const EducationTab = (props) => {
                     {/* Row 3: Start Month and Start Year */}
                     <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Month</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Month *</label>
                         <select
                           name="gradMonth"
                           value={form.gradMonth}
                           onChange={(e) => handleChange(idx, e)}
                           style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, background: 'white', boxSizing: 'border-box' }}
                         >
-                          <option value="">Select month</option>
+                          <option value="">Select month </option>
                           {months.map((month) => (
                             <option key={month} value={month}>{month}</option>
                           ))}
                         </select>
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Year</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Year *</label>
                         <select
                           name="gradYear"
                           value={form.gradYear}
@@ -319,7 +333,7 @@ const EducationTab = (props) => {
                     {/* Row 4: End Month and End Year */}
                     <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>End Month</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>End Month *</label>
                         <select
                           name="endMonth"
                           value={form.endMonth}
@@ -333,7 +347,7 @@ const EducationTab = (props) => {
                         </select>
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>End Year</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>End Year *</label>
                         <select
                           name="endYear"
                           value={form.endYear}
@@ -393,9 +407,32 @@ Advanced Excel – Microsoft </div>
                 </div>
               ))}
             </div>
+            <div style={{ 
+              fontSize: '12px', 
+              color: isFormValid() ? '#10b981' : '#ef4444',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '8px 12px',
+              background: isFormValid() ? '#f0fdf4' : '#fef2f2',
+              borderRadius: '6px',
+              border: `1px solid ${isFormValid() ? '#bbf7d0' : '#fecaca'}`
+            }}>
+              {isFormValid() ? (
+                <>
+                  <span>✓</span>
+                  <span>All education fields are complete</span>
+                </>
+              ) : (
+                <>
+                  <span>⚠</span>
+                  <span>Please fill all required education fields</span>
+                </>
+              )}
+            </div>
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16, marginTop: -5 }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16,marginTop:'10px' }}>
             {isEditingMode ? (
               <button
                 type="button"
@@ -417,18 +454,21 @@ Advanced Excel – Microsoft </div>
               <button
                 type="button"
                 onClick={onNext}
+                disabled={!isFormValid()}
                 style={{
                   border: 'none',
-                  background: '#6b3b7a',
+                  background: isFormValid() ? '#6b3b7a' : '#9ca3af',
                   color: 'white',
                   fontWeight: 700,
                   fontSize: 18,
                   borderRadius: 30,
                   padding: '10px 36px',
-                  cursor: 'pointer',
+                  cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                  opacity: isFormValid() ? 1 : 0.6,
+                  transition: 'all 0.2s ease-in-out',
                 }}
               >
-                Next
+                {isFormValid() ? 'Next' : 'Fill Required Fields'}
               </button>
             )}
           </div>

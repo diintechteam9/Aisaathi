@@ -48,6 +48,20 @@ const ExperienceTab = (props) => {
 
   const experiences = formData && formData.length > 0 ? formData : [{ ...emptyExperience }];
 
+  // Validation function to check if all required fields are filled
+  const isFormValid = () => {
+    return experiences.every(experience => {
+      return (
+        experience.jobTitle.trim() !== '' &&
+        experience.companyName.trim() !== '' &&
+        experience.location.trim() !== '' &&
+        experience.jobDescription.trim() !== '' &&
+        experience.startMonth !== '' &&
+        experience.startYear !== ''
+      );
+    });
+  };
+
   const handleChange = (idx, field, value) => {
     let updatedExperiences = experiences.map((exp, i) => {
       if (i === idx) {
@@ -156,7 +170,7 @@ const ExperienceTab = (props) => {
           background: '#f8f9fa', 
           borderRadius: 16, 
           padding: isMobile ? '12px' : '16px',
-          height: isMobile ? '620px' : '645px',
+          height: isMobile ? '620px' : '648px',
           width: isMobile ? '100%' : '420px',
           maxWidth: isMobile ? '100%' : '420px',
           overflowY: 'auto',
@@ -177,7 +191,7 @@ const ExperienceTab = (props) => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
-                marginBottom: 24,
+                marginBottom: 10,
                 padding: 0,
               }}
             >
@@ -187,7 +201,7 @@ const ExperienceTab = (props) => {
           
           <div style={{ position: 'relative' }}>
             <h3 style={{ 
-              fontSize: isMobile ? 16 : 18, 
+              fontSize: isMobile ? 16 : 15, 
               fontWeight: 600, 
               color: '#1e293b', 
               marginBottom: 8, 
@@ -199,7 +213,7 @@ const ExperienceTab = (props) => {
             {/* Required field indicator */}
             <div style={{ 
               position: 'absolute', 
-              top: isMobile ? -42 : -40, 
+              top: isMobile ? -28 : -30, 
               right: 0, 
               fontSize: 12, 
               fontWeight: 500, 
@@ -216,7 +230,7 @@ const ExperienceTab = (props) => {
                   borderRadius: 12, 
                   padding: isMobile ? '16px' : '24px', 
                   background: '#fff', 
-                  marginBottom: 16,
+                  marginBottom: 10,
                   width: '100%',
                   boxSizing: 'border-box'
                 }}>
@@ -263,7 +277,7 @@ const ExperienceTab = (props) => {
                         />
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Job Type</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Job Type *</label>
                         <select
                           name="jobType"
                           value={exp.jobType}
@@ -280,7 +294,7 @@ const ExperienceTab = (props) => {
                     {/* Row 2: Company Name and Location */}
                     <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Company Name *</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Company Name </label>
                         <input
                           type="text"
                           name="companyName"
@@ -292,7 +306,7 @@ const ExperienceTab = (props) => {
                         />
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Location</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Location *</label>
                         <input
                           type="text"
                           name="location"
@@ -307,7 +321,7 @@ const ExperienceTab = (props) => {
                     {/* Row 3: Start Month and Start Year */}
                     <div style={{ display: 'flex', gap: isMobile ? 8 : 12, width: '100%' }}>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Month</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Month *</label>
                         <select
                           name="startMonth"
                           value={exp.startMonth}
@@ -321,7 +335,7 @@ const ExperienceTab = (props) => {
                         </select>
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Year</label>
+                        <label style={{ fontWeight: 600, fontSize: 13 }}>Start Year *</label>
                         <select
                           name="startYear"
                           value={exp.startYear}
@@ -409,9 +423,32 @@ const ExperienceTab = (props) => {
                 </div>
               ))}
             </div>
+            <div style={{ 
+              fontSize: '12px', 
+              color: isFormValid() ? '#10b981' : '#ef4444',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '8px 12px',
+              background: isFormValid() ? '#f0fdf4' : '#fef2f2',
+              borderRadius: '6px',
+              border: `1px solid ${isFormValid() ? '#bbf7d0' : '#fecaca'}`
+            }}>
+              {isFormValid() ? (
+                <>
+                  <span>✓</span>
+                  <span>All experience fields are complete</span>
+                </>
+              ) : (
+                <>
+                  <span>⚠</span>
+                  <span>Please fill all required experience fields</span>
+                </>
+              )}
+            </div>
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16, marginTop: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16, marginTop: '10px' }}>
             {isEditingMode ? (
               <button
                 type="button"
@@ -433,18 +470,21 @@ const ExperienceTab = (props) => {
               <button
                 type="button"
                 onClick={onNext}
+                disabled={!isFormValid()}
                 style={{
                   border: 'none',
-                  background: '#6b3b7a',
+                  background: isFormValid() ? '#6b3b7a' : '#9ca3af',
                   color: 'white',
                   fontWeight: 700,
                   fontSize: 18,
                   borderRadius: 30,
                   padding: '10px 36px',
-                  cursor: 'pointer',
+                  cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                  opacity: isFormValid() ? 1 : 0.6,
+                  transition: 'all 0.2s ease-in-out',
                 }}
               >
-                Next
+                {isFormValid() ? 'Next' : 'Fill Required Fields'}
               </button>
             )}
           </div>

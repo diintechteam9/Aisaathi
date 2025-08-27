@@ -31,6 +31,20 @@ const HeadingTab = (props) => {
     photo: null,
   };
 
+  // Validation function to check if all required fields are filled
+  const isFormValid = () => {
+    return (
+      heading.firstName.trim() !== '' &&
+      heading.surname.trim() !== '' &&
+      heading.profession.trim() !== '' &&
+      heading.city.trim() !== '' &&
+      heading.country.trim() !== '' &&
+      heading.pin.trim() !== '' &&
+      heading.phone.trim() !== '' &&
+      heading.email.trim() !== ''
+    );
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     updateFormData({ ...heading, [name]: value });
@@ -91,11 +105,11 @@ const HeadingTab = (props) => {
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
-        marginBottom: '20px',
+        marginBottom: '10px',
         marginLeft: isMobile ? '90px' : '10px',
       }}>
         <h1 style={{ 
-          marginTop:isMobile ? '-120px' : '0px',
+          marginTop:isMobile ? '-120px' : '-10px',
           fontSize:isMobile? 25 : 32, fontWeight: 700, margin: 0 }}>
           Profile 
         </h1>
@@ -116,12 +130,12 @@ const HeadingTab = (props) => {
           background: '#f8f9fa', 
           borderRadius: 16, 
           padding: isMobile ? '12px' : '16px',
-          height: isMobile ? '560px' : '600px',
+          height: isMobile ? '580px' : '648px',
           width: isMobile ? '100%' : '420px',
           maxWidth: isMobile ? '100%' : '420px',
           overflowY: 'auto',
           boxSizing: 'border-box',
-          marginTop: isMobile ? '-45px' : '0px',
+          marginTop: isMobile ? '-40px' : '-10px',
           marginLeft: isMobile ? '0px' : '10px',
         }}>
           {!isEditingMode && (
@@ -145,7 +159,7 @@ const HeadingTab = (props) => {
           )}
           {!isEditingMode && (
             <h1 style={{ 
-              fontSize: isMobile ? 20 : 30, fontWeight: 700, margin: '0rem 0 0.5rem' }}>
+              fontSize: isMobile ? 20 : 28, fontWeight: 700, margin: '0rem 0 0.5rem' }}>
               Let's start with the basics
             </h1>
           )}
@@ -285,7 +299,7 @@ const HeadingTab = (props) => {
                     name="city"
                     value={heading.city}
                     onChange={handleChange}
-                    placeholder="Nodia"
+                    placeholder="Noida"
                     required
                     style={{ width: '100%', padding: 8, marginTop: 4, borderRadius: 6, border: '1px solid #d1d5db', fontSize: 13, boxSizing: 'border-box' }}
                   />
@@ -348,8 +362,32 @@ const HeadingTab = (props) => {
                 </div>
               </div>
             </div>
+            <div style={{ 
+              marginTop: '16px', 
+              fontSize: '12px', 
+              color: isFormValid() ? '#10b981' : '#ef4444',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '8px 12px',
+              background: isFormValid() ? '#f0fdf4' : '#fef2f2',
+              borderRadius: '6px',
+              border: `1px solid ${isFormValid() ? '#bbf7d0' : '#fecaca'}`
+            }}>
+              {isFormValid() ? (
+                <>
+                  <span>✓</span>
+                  <span>All profile fields are complete</span>
+                </>
+              ) : (
+                <>
+                  <span>⚠</span>
+                  <span>Please fill all required fields</span>
+                </>
+              )}
+            </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16, marginTop: '-20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16, marginTop: '-25px' }}>
             {isEditingMode ? (
               <button
                 type="button"
@@ -358,10 +396,10 @@ const HeadingTab = (props) => {
                   border: 'none',
                   background: '#2563eb',
                   color: 'white',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontSize: 18,
                   borderRadius: 30,
-                  padding: '10px 36px',
+                  padding: '7px 30px',
                   cursor: 'pointer',
                 }}
               >
@@ -371,18 +409,22 @@ const HeadingTab = (props) => {
               <button
                 type="button"
                 onClick={onNext}
+                disabled={!isFormValid()}
                 style={{
                   border: 'none',
-                  background: '#6b3b7a',
+                  background: isFormValid() ? '#6b3b7a' : '#9ca3af',
                   color: 'white',
                   fontWeight: 700,
                   fontSize: 18,
                   borderRadius: 30,
                   padding: '10px 36px',
-                  cursor: 'pointer',
+                  marginTop:isMobile?'-4px':'10px',
+                  cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                  opacity: isFormValid() ? 1 : 0.6,
+                  transition: 'all 0.2s ease-in-out',
                 }}
               >
-                Next
+                {isFormValid() ? 'Next' : 'Fill Required Fields'}
               </button>
             )}
           </div>

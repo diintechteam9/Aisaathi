@@ -19,6 +19,11 @@ const SkillsTab = (props) => {
 
   const skills = formData && formData.length > 0 ? formData : [''];
 
+  // Validation function to check if all required fields are filled
+  const isFormValid = () => {
+    return skills.every(skill => skill.trim() !== '') && skills.length > 0;
+  };
+
   const handleSkillChange = (index, value) => {
     const updatedSkills = [...skills];
     updatedSkills[index] = value;
@@ -240,6 +245,26 @@ const SkillsTab = (props) => {
                 >
                   + Add Skill
                 </button>
+                <div style={{ 
+                  marginTop: '12px', 
+                  fontSize: '12px', 
+                  color: isFormValid() ? '#10b981' : '#ef4444',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}>
+                  {isFormValid() ? (
+                    <>
+                      <span>✓</span>
+                      <span>All skills are filled</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>⚠</span>
+                      <span>Please fill all skill fields</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -266,18 +291,21 @@ const SkillsTab = (props) => {
               <button
                 type="button"
                 onClick={onNext}
+                disabled={!isFormValid()}
                 style={{
                   border: 'none',
-                  background: '#6b3b7a',
+                  background: isFormValid() ? '#6b3b7a' : '#9ca3af',
                   color: 'white',
                   fontWeight: 700,
                   fontSize: 18,
                   borderRadius: 30,
                   padding: '10px 36px',
-                  cursor: 'pointer',
+                  cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                  opacity: isFormValid() ? 1 : 0.6,
+                  transition: 'all 0.2s ease-in-out',
                 }}
               >
-                Next
+                {isFormValid() ? 'Next' : 'Fill Required Fields'}
               </button>
             )}
           </div>

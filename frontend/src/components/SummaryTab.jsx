@@ -19,6 +19,11 @@ const SummaryTab = (props) => {
 
   const summary = formData || '';
 
+  // Validation function to check if summary is filled
+  const isFormValid = () => {
+    return summary.trim().length >= 50; // Minimum 50 characters for a meaningful summary
+  };
+
   const handleSummaryChange = (e) => {
     updateFormData(e.target.value);
   };
@@ -95,7 +100,7 @@ const SummaryTab = (props) => {
           background: '#f8f9fa', 
           borderRadius: 16, 
           padding: isMobile ? '12px' : '16px',
-          height: isMobile ? '450px' : '600px',
+          height: isMobile ? '470px' : '600px',
           width: isMobile ? '100%' : '420px',
           maxWidth: isMobile ? '100%' : '420px',
           overflowY: 'auto',
@@ -177,6 +182,21 @@ const SummaryTab = (props) => {
                     boxSizing: 'border-box'
                   }}
                 />
+                <div style={{ 
+                  marginTop: '8px', 
+                  fontSize: '12px', 
+                  color: summary.trim().length >= 50 ? '#10b981' : '#ef4444',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <span>
+                    {summary.trim().length >= 50 ? '✓ Summary is complete' : `Write at least ${50 - summary.trim().length} more characters`}
+                  </span>
+                  <span style={{ fontWeight: '500' }}>
+                    {summary.trim().length}/50 characters
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -203,18 +223,21 @@ const SummaryTab = (props) => {
               <button
                 type="button"
                 onClick={onNext}
+                disabled={!isFormValid()}
                 style={{
                   border: 'none',
-                  background: '#6b3b7a',
+                  background: isFormValid() ? '#6b3b7a' : '#9ca3af',
                   color: 'white',
                   fontWeight: 700,
                   fontSize: 18,
                   borderRadius: 30,
                   padding: '10px 36px',
-                  cursor: 'pointer',
+                  cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                  opacity: isFormValid() ? 1 : 0.6,
+                  transition: 'all 0.2s ease-in-out',
                 }}
               >
-                Next
+                {isFormValid() ? 'Next' : 'Fill Required Fields'}
               </button>
             )}
           </div>
